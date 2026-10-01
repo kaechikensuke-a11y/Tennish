@@ -10,6 +10,9 @@
     <Filter Include="Source\Stage">
       <UniqueIdentifier>{8d98b791-46cc-4f20-9226-833162916239}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameCamera">
+      <UniqueIdentifier>{13d5c333-ae60-4002-970a-3bed40cb372a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -21,6 +24,9 @@
     <ClCompile Include="Source\Stage\TennisCourt.cpp">
       <Filter>Source\Stage</Filter>
     </ClCompile>
+    <ClCompile Include="GameCamera\GameCamera.cpp">
+      <Filter>GameCamera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -30,6 +36,9 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Source\Stage\TennisCourt.h">
       <Filter>Source\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCamera\GameCamera.h">
+      <Filter>GameCamera</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

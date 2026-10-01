@@ -6,6 +6,7 @@
 
 #include "Game.h"
 #include "Source/Stage/TennisCourt.h"
+#include "GameCamera/GameCamera.h"
 
 
 
@@ -35,8 +36,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//////////////////////////////////////
 
 	//Gameクラスのオブジェクトを作成。
-	NewGO<Game>(0, "game");
+	//NewGO<Game>(0, "game");
 	NewGO<TennisCourt>(0, "tenniscourt");
+	NewGO<GameCamera>(0, "gamecamera");
 	//////////////////////////////////////
 	// 初期化を行うコードを書くのはここまで！！！
 	//////////////////////////////////////
@@ -44,9 +46,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	// ここからゲームループ。
 	while (DispatchWindowMessage())
 	{
-		if (g_pad[0]->IsTrigger(enButtonA) ){
-			g_pad[0]->SetVibration(/*durationSec=*/0.5f, /*normalizedPower=*/1.0f);
-		}
+		
 		K2Engine::GetInstance()->Execute();
 	}
 
