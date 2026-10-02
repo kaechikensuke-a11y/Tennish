@@ -1,21 +1,24 @@
 ﻿#include "stdafx.h"
 #include "Game.h"
-
+#include "Source/Character/Player/Player.h"
+#include "Source/Stage/TennisCourt.h"
+#include "GameCamera/GameCamera.h"
 
 bool Game::Start()
 {
-	m_modelRender.Init("Assets/modelData/unityChan.tkm");
+	NewGO<TennisCourt>(0, "tenniscourt");
+	NewGO<GameCamera>(0, "gamecamera");
+	NewGO<Player>(0, "player");
 
 	return true;
 }
 
 void Game::Update()
 {
-	// g_renderingEngine->DisableRaytracing();
-	m_modelRender.Update();
+
 }
 
 void Game::Render(RenderContext& rc)
 {
-	m_modelRender.Draw(rc);
+
 }

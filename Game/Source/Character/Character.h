@@ -23,12 +23,14 @@ protected:
 	/** どう動きたいかを決める関数 */
 	virtual Intent DecideIntent() = 0;
 
-	float m_X = 0.0f; /** X座標 */
-	float m_Z = 0.0f; /** Y座標 */
-	float m_speed = 200.0f; /** キャラクターの移動量(１秒あたり) */
+	/** キャラクターの移動量(１秒あたり) */
+	float m_speed = 1500.0f; 
 
 	ModelRender m_modelRender;
+	/** キャラクターの位置 */
 	Vector3 m_position;
+	/** キャラクターの向き */
+	Quaternion m_rotation;
 
 };
 
