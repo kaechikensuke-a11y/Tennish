@@ -2,11 +2,8 @@
 #include "Source/Character/Character.h"
 class Player : public Character
 {
-public:
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
 protected:
+	/** 親の仮想関数を実装 */
 	Intent DecideIntent() override;
 };
 
