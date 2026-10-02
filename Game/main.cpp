@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "Source/Stage/TennisCourt.h"
 #include "GameCamera/GameCamera.h"
+#include "Source/Character/Player/Player.h"
 
 
 
@@ -39,6 +40,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//NewGO<Game>(0, "game");
 	NewGO<TennisCourt>(0, "tenniscourt");
 	NewGO<GameCamera>(0, "gamecamera");
+	NewGO<Player>(0, "player");
 	//////////////////////////////////////
 	// 初期化を行うコードを書くのはここまで！！！
 	//////////////////////////////////////
