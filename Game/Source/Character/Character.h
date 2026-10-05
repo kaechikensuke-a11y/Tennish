@@ -13,6 +13,9 @@ public:
 
 	/** モデルの生成後に初期位置を決める */
 	void SetPosition(const Vector3& pos) { m_position = pos; }
+
+	/** ? */
+	Vector3 CalcHitVelocity(const Vector3& from, const Vector3& target, float flightTime) const;
 /** 自分と子クラスのみ使える */
 protected:
 
