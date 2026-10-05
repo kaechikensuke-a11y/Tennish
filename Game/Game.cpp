@@ -3,12 +3,14 @@
 #include "Source/Character/Player/Player.h"
 #include "Source/Stage/TennisCourt.h"
 #include "GameCamera/GameCamera.h"
+#include "Ball/Ball.h"
 
 bool Game::Start()
 {
 	NewGO<TennisCourt>(0, "tenniscourt");
 	NewGO<GameCamera>(0, "gamecamera");
 	NewGO<Player>(0, "player");
+	NewGO<Ball>(0, "ball");
 
 	return true;
 }
