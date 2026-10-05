@@ -9,7 +9,8 @@ bool Game::Start()
 {
 	NewGO<TennisCourt>(0, "tenniscourt");
 	NewGO<GameCamera>(0, "gamecamera");
-	NewGO<Player>(0, "player");
+	auto* player = NewGO<Player>(0, "player");
+	player->SetPosition(Vector3(1500.0f, 0.0f,-1000.0f));/** サーブの位置 */
 	NewGO<Ball>(0, "ball");
 
 	return true;
