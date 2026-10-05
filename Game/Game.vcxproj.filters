@@ -19,6 +19,9 @@
     <Filter Include="Source\Character\Player">
       <UniqueIdentifier>{2e9e77de-027e-4516-a49d-baaaf55168ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Ball">
+      <UniqueIdentifier>{911424f3-cc0e-4d5e-91c0-4d7c9b6f30b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -39,6 +42,9 @@
     <ClCompile Include="Source\Character\Character.cpp">
       <Filter>Source\Character</Filter>
     </ClCompile>
+    <ClCompile Include="Ball\Ball.cpp">
+      <Filter>Ball</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -57,6 +63,9 @@
     </ClInclude>
     <ClInclude Include="Source\Character\Character.h">
       <Filter>Source\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Ball\Ball.h">
+      <Filter>Ball</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -223,6 +223,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Ball\Ball.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera\GameCamera.cpp" />
     <ClCompile Include="main.cpp" />
@@ -237,6 +238,7 @@
     <ClCompile Include="system\system.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ball\Ball.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera\GameCamera.h" />
     <ClInclude Include="Source\Character\Character.h" />
