@@ -1,6 +1,9 @@
 ﻿#pragma once
 
 #include "Level3DRender/LevelRender.h"
+class Player;
+class Enemy;
+class Ball;
 
 class Game : public IGameObject
 {
@@ -11,14 +14,17 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 private:
-	//Player* m_player = nullptr;
-	//Enemy* m_enemy = nullptr;
-	//Ball* m_ball = nullptr;
+
+	void StartNextPoint();
+
+	Player* m_player = nullptr;
+	Enemy* m_enemy = nullptr;
+	Ball* m_ball = nullptr;
 
 	/** 現在のサーブ権 */
-	//bool m_playerServing = true;
-	//float m_resetTimer = 0.0f;
-	//bool m_pointEnded = false;
+	bool m_playerServing = true;
+	float m_resetTimer = 0.0f;
+	bool m_pointEnded = false;
 
 };
 

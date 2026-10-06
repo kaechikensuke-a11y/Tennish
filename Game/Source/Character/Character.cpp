@@ -20,7 +20,10 @@ namespace
 	constexpr float SERVE_FLIGHT_TIME =    1.0f;/** 打ってから着地までの時間 */
 	constexpr float SERVICE_BOX_X     =  550.0f;/** サービスボックス中央のX */
 	constexpr float SERVICE_LINE_Z    = 5500.0f;/** 着地地点 */
-	constexpr float AIM_RANGE_X       =  1000.0f;/** スティック操作で狙いを決める */
+	constexpr float AIM_RANGE_X       =  500.0f;/** スティック操作で狙いを決める */
+
+	constexpr float NET_Z = 4000.0f;
+	constexpr float SERVICE_LINE_DIST = 2000.0f;
 
 
 }
@@ -117,7 +120,7 @@ void Character::UpdateServe(const Intent& intent)
 			Vector3 target;
 			target.x = diagonal * SERVICE_BOX_X + intent.moveX * AIM_RANGE_X; /** スティックで微調整 */
 			target.y = GROUND_Y;
-			target.z = m_serveDirZ * SERVICE_LINE_Z;
+			target.z = NET_Z + m_serveDirZ * (SERVICE_LINE_DIST * 0.6f);
 			
 			Vector3 vel = CalcHitVelocity(m_ball->GetPosition(), target, SERVE_FLIGHT_TIME);
 			m_ball->SetVelocity(vel);

@@ -23,6 +23,10 @@ Enemy::Intent Enemy::DecideIntent()
 
 	switch (m_serveState)
 	{
+	case ServeState::en_Waiting:
+		m_npcTimer = 0.0f;   /** 待機中にタイマーをリセットしておく */
+		break;
+
 	case ServeState::en_Ready:
 
 		/** 1秒後にトスを上げる */
@@ -40,7 +44,6 @@ Enemy::Intent Enemy::DecideIntent()
 		if (m_npcTimer > NPC_HIT_DELAY)
 		{
 			intent.isSwing = true;
-			intent.moveX = ((rand() % 500) - 100) / 100.0f;
 			m_npcTimer = 0.0f;
 		}
 		break;
