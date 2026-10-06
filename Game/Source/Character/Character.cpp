@@ -20,7 +20,7 @@ namespace
 	constexpr float SERVE_FLIGHT_TIME =    1.0f;/** 打ってから着地までの時間 */
 	constexpr float SERVICE_BOX_X     =  550.0f;/** サービスボックス中央のX */
 	constexpr float SERVICE_LINE_Z    = 5500.0f;/** 着地地点 */
-	constexpr float AIM_RANGE_X       =  300.0f;/** スティック操作で狙いを決める */
+	constexpr float AIM_RANGE_X       =  1000.0f;/** スティック操作で狙いを決める */
 
 
 }
@@ -81,6 +81,9 @@ void Character::UpdateServe(const Intent& intent)
 
 	switch (m_serveState)
 	{
+	case ServeState::en_Waiting:
+		/** ボールには触らない */
+		break;
 	case ServeState::en_Ready:
 		/** ボールを手の位置に固定する */
 		m_ball->SetHeld(true);
