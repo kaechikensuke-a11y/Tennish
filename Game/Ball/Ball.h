@@ -14,6 +14,10 @@ public:
 	void SetPosition(const Vector3& pos) { m_ballPosition = pos; }
 	void SetVelocity(const Vector3& vel) { m_ballSpeed    = vel; }
 	const Vector3& GetPosition() const { return m_ballPosition; }
+
+	/** ボールのバウンド等関数 */
+	int GetBounceCount() const { return m_bounceCount; }
+	void ResetBounceCount() { m_bounceCount = 0; }
 private:
 	/** ボールのモデル */
 	ModelRender m_ballRender;
@@ -26,5 +30,8 @@ private:
 
 	/** ボールを持っているかどうか */
 	bool m_isHeld = true;
+
+	/** ボールのバウンド回数 */
+	uint8_t m_bounceCount = 0;
 };
 

@@ -22,6 +22,9 @@
     <Filter Include="Ball">
       <UniqueIdentifier>{911424f3-cc0e-4d5e-91c0-4d7c9b6f30b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Character\Enemy">
+      <UniqueIdentifier>{4b0a7705-65c0-426f-9ab4-cfe51fbc066f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -45,6 +48,9 @@
     <ClCompile Include="Ball\Ball.cpp">
       <Filter>Ball</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Character\Enemy\Enemy.cpp">
+      <Filter>Source\Character\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -66,6 +72,9 @@
     </ClInclude>
     <ClInclude Include="Ball\Ball.h">
       <Filter>Ball</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Character\Enemy\Enemy.h">
+      <Filter>Source\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
