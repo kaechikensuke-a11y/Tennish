@@ -37,6 +37,7 @@ void Ball::Update()
 		{
 			m_ballPosition.y = GROUND_Y;
 			m_ballSpeed.y *= -BOUNCE;
+			m_bounceCount++;
 		}
 	}
 

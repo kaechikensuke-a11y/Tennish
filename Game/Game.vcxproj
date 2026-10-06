@@ -228,6 +228,7 @@
     <ClCompile Include="GameCamera\GameCamera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\Character\Character.cpp" />
+    <ClCompile Include="Source\Character\Enemy\Enemy.cpp" />
     <ClCompile Include="Source\Character\Player\Player.cpp" />
     <ClCompile Include="Source\Stage\TennisCourt.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -242,6 +243,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera\GameCamera.h" />
     <ClInclude Include="Source\Character\Character.h" />
+    <ClInclude Include="Source\Character\Enemy\Enemy.h" />
     <ClInclude Include="Source\Character\Player\Player.h" />
     <ClInclude Include="Source\Stage\TennisCourt.h" />
     <ClInclude Include="stdafx.h" />

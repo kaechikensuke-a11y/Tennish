@@ -23,6 +23,15 @@ public:
 		m_serveState = isServer ? ServeState::en_Ready : ServeState::en_Waiting;
 	}
 	void SetServeDirZ(float dirZ) { m_serveDirZ = dirZ; }
+
+	/** サーブ権と位置をリセットして、次のポイントを始める */
+	void ResetForServe(bool isServer, const Vector3& pos)
+	{
+		m_position = pos;
+		m_serveState = isServer ? ServeState::en_Ready : ServeState::en_Waiting;
+		m_tossTimer = 0.0f;
+	}
+
 /** 自分と子クラスのみ使える */
 protected:
 
@@ -31,7 +40,7 @@ protected:
 	{
 		en_Waiting,/** サーブが打たれるのを待つ */
 		en_Ready,  /** 構え、ボールを手に持っている */
-		en_Tossed, /** トス中、もう一度ボダンで打つ */
+		en_Tossed, /** トス中、もう一度ボタンで打つ */
 		en_Done    /** サーブ完了(ここからラリーを開始する) */
 	};
 
@@ -56,6 +65,9 @@ protected:
 
 	/** トスしている時間 */
 	float m_tossTimer = 0.0f;
+
+	/** モデルのファイルパス(子クラスで差し替える) */
+	const char* m_modelPath = nullptr;
 
 	ModelRender m_modelRender;
 	/** キャラクターの位置 */

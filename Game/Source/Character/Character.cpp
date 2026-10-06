@@ -4,7 +4,7 @@
 
 namespace
 {
-	const char* PLAYER_MODEL_PATH = "Assets/model/Player/TennisPlayerBlue.tkm";
+	const char* BLUE_PLAYER_MODEL_PATH = "Assets/model/Player/TennisPlayerBlue.tkm";
 	constexpr float PLAYER_POSITION_Y = -900.0f;
 
 	constexpr float TOSS_SPEED  =  1000.0f; /** トスで上に投げる速さ */
@@ -27,8 +27,11 @@ namespace
 
 bool Character::Start()
 {
+	/** 子クラスが指定していればそれを使い、なければ既定のモデルを使う */
+	const char* path = (m_modelPath != nullptr) ? m_modelPath : BLUE_PLAYER_MODEL_PATH;
+
 	/** モデルの読み込み */
-	m_modelRender.Init(PLAYER_MODEL_PATH);
+	m_modelRender.Init(path);
 
 	/** 初期位置をモデルに反映 */
 	m_modelRender.SetPosition(m_position);
