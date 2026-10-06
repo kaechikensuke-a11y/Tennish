@@ -16,12 +16,20 @@ public:
 
 	/** ? */
 	Vector3 CalcHitVelocity(const Vector3& from, const Vector3& target, float flightTime) const;
+
+	/** サーブ権の設定(生成直後) */
+	void SetServer(bool isServer)
+	{
+		m_serveState = isServer ? ServeState::en_Ready : ServeState::en_Waiting;
+	}
+	void SetServeDirZ(float dirZ) { m_serveDirZ = dirZ; }
 /** 自分と子クラスのみ使える */
 protected:
 
 	/** サーブの状態 */
 	enum class ServeState
 	{
+		en_Waiting,/** サーブが打たれるのを待つ */
 		en_Ready,  /** 構え、ボールを手に持っている */
 		en_Tossed, /** トス中、もう一度ボダンで打つ */
 		en_Done    /** サーブ完了(ここからラリーを開始する) */
