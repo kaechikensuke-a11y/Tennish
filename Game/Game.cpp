@@ -12,6 +12,9 @@ namespace
 	constexpr uint8_t POINT_END_BOUNCE = 2;
 	/** ポイント終了後から次のサーブに移るまでの時間 */
 	constexpr float POINT_RESET_WAIT = 1.5f;
+
+	const Vector3 PLAYER_SERVE_POS(1500.0f, 0.0f, -1000.0f);
+	const Vector3 ENEMY_SERVE_POS(-1500.0f, 0.0f, 9000.0f);
 }
 
 bool Game::Start()
@@ -19,16 +22,16 @@ bool Game::Start()
 	NewGO<TennisCourt>(0, "tenniscourt");
 	NewGO<GameCamera>(0, "gamecamera");
 	m_player = NewGO<Player>(0, "player");
-	m_player->SetPosition(Vector3(1500.0f, 0.0f,-1000.0f));/** サーブの位置 */
+	m_player->SetPosition(Vector3(PLAYER_SERVE_POS));/** サーブの位置 */
 	m_player->SetServeDirZ(1.0f);
 	m_player->SetServer(true);
 	
 	m_enemy = NewGO<Enemy>(0, "enemy");
-	m_enemy->SetPosition(Vector3(-1500.0f, 0.0f, 9000.0f));/** サーブの位置 */
+	m_enemy->SetPosition(Vector3(ENEMY_SERVE_POS));/** サーブの位置 */
 	m_enemy->SetServeDirZ(-1.0f);
 	m_enemy->SetServer(false);
 
-	m_ball = NewGO<Ball>(0, "ball");
+	NewGO<Ball>(0, "ball");
 
 	return true;
 }
