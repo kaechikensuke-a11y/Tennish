@@ -51,18 +51,23 @@ void Character::Update()
 	/** 経過時間 */
 	float dt = g_gameTime->GetFrameDeltaTime();
 
-	if (m_serveState == ServeState::en_Done)
+	/** 移動できる状態かどうか */
+	bool isMove = (m_serveState == ServeState::en_Waiting) ||
+		(m_serveState == ServeState::en_Done);
+
+	/** 移動できる状態なら */
+	if (isMove)
 	{
 		/** 座標を動かす */
 		m_position.x += intent.moveX * m_speed * dt;
 		m_position.z += intent.moveZ * m_speed * dt;
-	}
-	
-	/** スティックを倒しているときだけ向きを変える */
-	if (fabsf(intent.moveX) > 0.001f || fabsf(intent.moveZ) > 0.001f)
-	{
-		Vector3 dir(intent.moveX, 0.0f, intent.moveZ);
-		m_rotation.SetRotationYFromDirectionXZ(dir);
+
+		/** スティックを倒しているときだけ向きを変える */
+		if (fabsf(intent.moveX) > 0.001f || fabsf(intent.moveZ) > 0.001f)
+		{
+			Vector3 dir(intent.moveX, 0.0f, intent.moveZ);
+			m_rotation.SetRotationYFromDirectionXZ(dir);
+		}
 	}
 
 	/** 高さは常に固定 */
@@ -141,6 +146,8 @@ void Character::UpdateServe(const Intent& intent)
 Vector3 Character::CalcHitVelocity(const Vector3& from, const Vector3& target, float flightTime) const
 {
 	Vector3 vel;
+
+	/** 水平方向は重力が働かないので、速度 = 距離 / 時間 */
 	vel.x = (target.x - from.x) / flightTime;
 	vel.z = (target.z - from.z) / flightTime;
 

@@ -22,16 +22,16 @@ bool Game::Start()
 	NewGO<TennisCourt>(0, "tenniscourt");
 	NewGO<GameCamera>(0, "gamecamera");
 	m_player = NewGO<Player>(0, "player");
-	m_player->SetPosition(Vector3(PLAYER_SERVE_POS));/** サーブの位置 */
+	m_player->SetPosition(Vector3(PLAYER_SERVE_POS));
 	m_player->SetServeDirZ(1.0f);
 	m_player->SetServer(true);
 	
 	m_enemy = NewGO<Enemy>(0, "enemy");
-	m_enemy->SetPosition(Vector3(ENEMY_SERVE_POS));/** サーブの位置 */
+	m_enemy->SetPosition(Vector3(ENEMY_SERVE_POS));
 	m_enemy->SetServeDirZ(-1.0f);
 	m_enemy->SetServer(false);
 
-	NewGO<Ball>(0, "ball");
+	m_ball = NewGO<Ball>(0, "ball");
 
 	return true;
 }
