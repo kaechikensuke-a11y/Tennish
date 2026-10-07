@@ -1,5 +1,6 @@
 #pragma once
 class Ball;
+/** 誰が操作しても同じ処理をまとめる */
 class Character : public IGameObject
 {
 public:
@@ -14,22 +15,31 @@ public:
 	/** モデルの生成後に初期位置を決める */
 	void SetPosition(const Vector3& pos) { m_position = pos; }
 
-	/** ? */
+	/** fromからtargetへflightTime秒で着地するための初速を計算して返す */
 	Vector3 CalcHitVelocity(const Vector3& from, const Vector3& target, float flightTime) const;
 
-	/** サーブ権の設定(生成直後) */
+	/*
+	 * サーブ権の設定(生成直後) 
+	 * trueならサーブをする
+	 * falseならサーブを待つ
+	 */
 	void SetServer(bool isServer)
 	{
 		m_serveState = isServer ? ServeState::en_Ready : ServeState::en_Waiting;
 	}
+
+	/*
+	 * 打つ方向を決める 
+	 * +1なら奥に打つ、-1なら手前側に打つ
+	 */
 	void SetServeDirZ(float dirZ) { m_serveDirZ = dirZ; }
 
 	/** サーブ権と位置をリセットして、次のポイントを始める */
 	void ResetForServe(bool isServer, const Vector3& pos)
 	{
-		m_position = pos;
-		m_serveState = isServer ? ServeState::en_Ready : ServeState::en_Waiting;
-		m_tossTimer = 0.0f;
+		m_position = pos; /** 立ち位置を戻す */
+		m_serveState = isServer ? ServeState::en_Ready : ServeState::en_Waiting;/** サーブ権に応じた状態に */
+		m_tossTimer = 0.0f;/** 前のトスが上がる時間を初期化 */
 	}
 
 /** 自分と子クラスのみ使える */
@@ -44,6 +54,7 @@ protected:
 		en_Done    /** サーブ完了(ここからラリーを開始する) */
 	};
 
+	/** どう動きたいかをまとめたもの */
 	struct Intent
 	{
 		float moveX  = 0.0f; /** 左、右 */
@@ -51,19 +62,20 @@ protected:
 		bool isSwing = false; /** ボタンを押したかどうか */
 	};
 
+	/** サーブの状態を1フレーム進める */
 	void UpdateServe(const Intent& intent);
 
-	ServeState m_serveState = ServeState::en_Ready;
-	Ball* m_ball = nullptr;
+	ServeState m_serveState = ServeState::en_Ready; /** 今のサーブ状態 */
+	Ball* m_ball = nullptr; /** ボールへのポインタ */
 	float m_serveDirZ = 1.0f; /** 相手コートの方向 */
 
-	/** どう動きたいかを決める関数 */
+	/** 返したIntentをもとにCharacterが動く */
 	virtual Intent DecideIntent() = 0;
 
 	/** キャラクターの移動量(１秒あたり) */
 	float m_speed = 1500.0f; 
 
-	/** トスしている時間 */
+	/** トスしてからの経過時間 */
 	float m_tossTimer = 0.0f;
 
 	/** モデルのファイルパス(子クラスで差し替える) */

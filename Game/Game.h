@@ -17,6 +17,7 @@ private:
 
 	void StartNextPoint();
 
+	/** 生成したオブジェクトの保存 */
 	Player* m_player = nullptr;
 	Enemy* m_enemy = nullptr;
 	Ball* m_ball = nullptr;

@@ -19,6 +19,7 @@ Enemy::Intent Enemy::DecideIntent()
 {
 	Intent intent;
 
+	/** 経過時間 */
 	float dt = g_gameTime->GetFrameDeltaTime();
 
 	switch (m_serveState)
@@ -33,6 +34,7 @@ Enemy::Intent Enemy::DecideIntent()
 		m_npcTimer += dt;
 		if (m_npcTimer > NPC_TOSS_DELAY)
 		{
+			/** トス */
 			intent.isSwing = true;
 			m_npcTimer = 0.0f;
 		}
@@ -43,6 +45,7 @@ Enemy::Intent Enemy::DecideIntent()
 		m_npcTimer += dt;
 		if (m_npcTimer > NPC_HIT_DELAY)
 		{
+			/** 時間経過で打つ */
 			intent.isSwing = true;
 			m_npcTimer = 0.0f;
 		}
