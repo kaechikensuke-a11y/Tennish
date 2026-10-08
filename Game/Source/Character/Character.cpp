@@ -25,7 +25,12 @@ namespace
 	constexpr float NET_Z = 4000.0f; /** ネットのZ座標 */
 	constexpr float SERVICE_LINE_DIST = 2000.0f; /** ネットからサービスラインまでの距離 */
 
-
+	constexpr float HIT_RANGE         =  600.0f; /** ボールを打てる水平距離 */
+	constexpr float HIT_MAX_HEIGHT	  = 1500.0f; /** 足元からこの高さまでなら打てる */
+	constexpr float RALLY_FLIGHT_TIME =    1.0f; /** 打ち返してから着地するまでの時間 */
+	constexpr float RALLY_AIM_X		  = 1000.0f; /** ？ */
+	constexpr float RALLY_DIST_NEAR	  = 1500.0f; /** ？ */
+	constexpr float RALLY_DIST_FAR	  = 3500.0f; /** ？ */
 }
 
 bool Character::Start()
@@ -75,6 +80,9 @@ void Character::Update()
 
 	/** サーブ */
 	UpdateServe(intent);
+
+	/** ラリー(打ち返し) */
+	UpdateRally(intent);
 
 	/** 動かした座標をモデルに反映する */
 	m_modelRender.SetPosition(m_position);
@@ -134,6 +142,9 @@ void Character::UpdateServe(const Intent& intent)
 			Vector3 vel = CalcHitVelocity(m_ball->GetPosition(), target, SERVE_FLIGHT_TIME);
 			m_ball->SetVelocity(vel);
 
+			/** トス中のバウンドを数えない */
+			m_ball->ResetBounceCount();
+
 			m_serveState = ServeState::en_Done;
 		}
 		break;
@@ -141,6 +152,55 @@ void Character::UpdateServe(const Intent& intent)
 	case ServeState::en_Done:
 		break;
 	}
+}
+
+bool Character::IsBallComing() const
+{
+	if (m_ball == nullptr) return false;
+
+	/** 自分の打つ方向と逆向きに飛んでいれば、こちらに向かってくる */
+	return m_ball->GetVelocity().z * m_serveDirZ < 0.0f;
+}
+
+void Character::UpdateRally(const Intent& intent)
+{
+	if (m_ball == nullptr) return;
+
+	/** 打てるのは、レシーブ待ち(最初の返球)かラリー中 */
+	if (m_serveState != ServeState::en_Waiting &&
+		m_serveState != ServeState::en_Done) return;
+
+	if (!intent.isSwing) return;                    /** ボタンを押していない */
+	if (!IsBallComing()) return;                    /** 相手の方へ飛んでいくボールは打てない */
+	if (m_ball->GetBounceCount() >= 2) return;      /** 2バウンド後は打てない(ポイント終了) */
+
+	/** ボールが届く範囲にあるか */
+	Vector3 diff = m_ball->GetPosition() - m_position;
+	float height = diff.y;
+	diff.y = 0.0f;                                  /** 水平距離だけで判定 */
+	if (diff.Length() > HIT_RANGE) return;
+	if (height > HIT_MAX_HEIGHT) return;
+
+	/** 狙いの値を範囲内に収める */
+	float aimX = intent.aimX;
+	if (aimX > 1.0f) aimX = 1.0f;
+	if (aimX < -1.0f) aimX = -1.0f;
+
+	/** 着地させたい地点(ネット基準で、相手コートの中) */
+	float distFromNet = RALLY_DIST_NEAR + (RALLY_DIST_FAR - RALLY_DIST_NEAR);
+
+	Vector3 target;
+	target.x = aimX * RALLY_AIM_X;
+	target.y = GROUND_Y;
+	target.z = NET_Z + m_serveDirZ * distFromNet;
+
+	/** サーブと同じ逆算で打ち返す */
+	Vector3 vel = CalcHitVelocity(m_ball->GetPosition(), target, RALLY_FLIGHT_TIME);
+	m_ball->SetVelocity(vel);
+	m_ball->ResetBounceCount();  /** 打ち返したのでバウンド数を戻す */
+
+	/** レシーブ側もここからラリー中の扱いになる */
+	m_serveState = ServeState::en_Done;
 }
 
 Vector3 Character::CalcHitVelocity(const Vector3& from, const Vector3& target, float flightTime) const

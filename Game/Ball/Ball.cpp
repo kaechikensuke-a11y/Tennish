@@ -45,6 +45,21 @@ void Ball::Update()
 	m_ballRender.Update();
 }
 
+Vector3 Ball::PredictLanding() const
+{
+	/** 地面までの高さ */
+	float h = m_ballPosition.y - GROUND_Y;
+	if (h < 0.0f) h = 0.0f;
+
+	/** ？ */
+	float disc = m_ballSpeed.y * m_ballSpeed.y - 2.0f * GRAVITY * h;
+	float t = (-m_ballSpeed.y - sqrtf(disc)) / GRAVITY;
+
+	/** 水平方向は等速なので、t秒後の位置がそのまま着地点 */
+	return Vector3(m_ballPosition.x + m_ballSpeed.x * t, GROUND_Y, m_ballPosition.z + m_ballSpeed.z * t);
+
+}
+
 void Ball::Render(RenderContext& rc)
 {
 	m_ballRender.Draw(rc);

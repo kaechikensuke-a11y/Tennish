@@ -59,11 +59,15 @@ protected:
 	{
 		float moveX  = 0.0f; /** 左、右 */
 		float moveZ  = 0.0f; /** 奥、手前 */
-		bool isSwing = false; /** ボタンを押したかどうか */
+		bool isSwing = false; /** ボタンを押したかどうか */ 
+		float aimX = 0.0f;   /** 打つ左右の狙い */
 	};
 
 	/** サーブの状態を1フレーム進める */
 	void UpdateServe(const Intent& intent);
+
+	/** ラリー中の打ち返し処理 */
+	void UpdateRally(const Intent& intent);
 
 	ServeState m_serveState = ServeState::en_Ready; /** 今のサーブ状態 */
 	Ball* m_ball = nullptr; /** ボールへのポインタ */
@@ -77,6 +81,9 @@ protected:
 
 	/** トスしてからの経過時間 */
 	float m_tossTimer = 0.0f;
+
+	/** ボールが自分のコートに向かって飛んできているか */
+	bool IsBallComing() const;
 
 	/** モデルのファイルパス(子クラスで差し替える) */
 	const char* m_modelPath = nullptr;

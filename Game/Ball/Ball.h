@@ -15,6 +15,14 @@ public:
 	void SetVelocity(const Vector3& vel) { m_ballSpeed    = vel; }
 	const Vector3& GetPosition() const { return m_ballPosition; }
 
+	/** ボールの速度(進行方向の判定や落下地点の予測に使う) */
+	const Vector3& GetVelocity() const { return m_ballSpeed; }
+
+	/** 今の位置と速度から、地面に着地する地点を予測して返す */
+	Vector3 PredictLanding() const;
+
+	/** 今の位置と速度から */
+
 	/** ボールのバウンド等関数 */
 	int GetBounceCount() const { return m_bounceCount; }
 	void ResetBounceCount() { m_bounceCount = 0; }
