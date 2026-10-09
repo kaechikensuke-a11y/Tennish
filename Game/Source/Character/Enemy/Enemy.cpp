@@ -56,7 +56,7 @@ Enemy::Intent Enemy::DecideIntent()
 		}
 		break;
 	case ServeState::en_Done:
-		ChaseBall(intent); /** ラリー中 */
+		ChaseBall(intent); /** ラリー中は追いかけて打つ */
 		break;
 	}
 
@@ -73,12 +73,14 @@ void Enemy::ChaseBall(Intent& intent)
 	Vector3 dest = (m_ball->GetBounceCount() == 0)
 		? m_ball->PredictLanding()
 		: m_ball->GetPosition();
+
 	/** 目標地点へ向かって移動 */
 	Vector3 diff = dest - m_position;
-	diff.y = 0.0f;
-	if (diff.Length() > NPC_STOP_DIST)
+	diff.y = 0.0f; /** 水平方向だけで考える */
+	if (diff.Length() > NPC_STOP_DIST) /** 近すぎるとぶるぶる震えるため */
 	{
 		diff.Normalize();
+		/** プレイヤーのスティック入力と同じ形式 */
 		intent.moveX = diff.x;
 		intent.moveZ = diff.z;
 	}

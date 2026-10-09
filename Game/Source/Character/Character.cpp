@@ -7,17 +7,17 @@ namespace
 	const char* BLUE_PLAYER_MODEL_PATH = "Assets/model/Player/TennisPlayerBlue.tkm";
 	constexpr float PLAYER_POSITION_Y = -900.0f;
 
-	constexpr float TOSS_SPEED  =  1000.0f; /** トスで上に投げる速さ */
+	constexpr float TOSS_SPEED  =  1500.0f; /** トスで上に投げる速さ */
 	constexpr float SERVE_SPEED = 2000.0f; /** サーブ前方への速さ */
 	constexpr float SERVE_UP    =  2500.0f; /** サーブ上向きの速さ */
 	constexpr float HAND_HEIGHT =  350.0f; /** 足元から手までの高さ */
 	constexpr float SWING_ENABLE_TIME = 0.3f; /** トス後、打てるようになるまでの時間 */
 
 	/** Ball.cppと同じ値にする */
-	constexpr float GRAVITY           = -980.0f; /** 重力 */
+	constexpr float GRAVITY           = -2500.0f; /** 重力 */
 	constexpr float GROUND_Y          = -680.0f; /** 地面の高さ */
 
-	constexpr float SERVE_FLIGHT_TIME =    1.0f;/** 打ってから着地までの時間 */
+	constexpr float SERVE_FLIGHT_TIME =    1.4f;/** 打ってから着地までの時間 */
 	constexpr float SERVICE_BOX_X     =  550.0f;/** サービスボックス中央のX */
 	constexpr float SERVICE_LINE_Z    = 5500.0f;/** 着地地点 */
 	constexpr float AIM_RANGE_X       =  500.0f;/** スティック操作で狙いを決める */
@@ -27,10 +27,15 @@ namespace
 
 	constexpr float HIT_RANGE         =  600.0f; /** ボールを打てる水平距離 */
 	constexpr float HIT_MAX_HEIGHT	  = 1500.0f; /** 足元からこの高さまでなら打てる */
-	constexpr float RALLY_FLIGHT_TIME =    1.0f; /** 打ち返してから着地するまでの時間 */
-	constexpr float RALLY_AIM_X		  = 1000.0f; /** ？ */
-	constexpr float RALLY_DIST_NEAR	  = 1500.0f; /** ？ */
-	constexpr float RALLY_DIST_FAR	  = 3500.0f; /** ？ */
+	constexpr float RALLY_FLIGHT_TIME =    1.3f; /** 打ち返してから着地するまでの時間 */
+	constexpr float RALLY_AIM_X		  = 1000.0f; /** 左右の幅 */
+	constexpr float RALLY_DIST_NEAR	  = 1500.0f; /** ネット寄りに落ちる */
+	constexpr float RALLY_DIST_FAR	  = 3500.0f; /** ベースラインに落ちる */
+
+	constexpr float RALLY_TIME_LOW = 1.8f;  /** 打点が低いときの飛行時間 */
+	constexpr float RALLY_TIME_HIGH = 1.1f;  /** 打点が高いときの飛行時間 */
+	constexpr float HIT_HEIGHT_LOW = 220.0f; /** 足元からこの高さ以下なら */
+	constexpr float HIT_HEIGHT_HIGH = 1100.0f; /** 足元からこの高さ以上なら */
 }
 
 bool Character::Start()
@@ -177,9 +182,9 @@ void Character::UpdateRally(const Intent& intent)
 	/** ボールが届く範囲にあるか */
 	Vector3 diff = m_ball->GetPosition() - m_position;
 	float height = diff.y;
-	diff.y = 0.0f;                                  /** 水平距離だけで判定 */
-	if (diff.Length() > HIT_RANGE) return;
-	if (height > HIT_MAX_HEIGHT) return;
+	diff.y = 0.0f;                         /** 水平距離だけで判定 */
+	if (diff.Length() > HIT_RANGE) return; /** HIT_RANGEより遠かったら打ち返せない */
+	if (height > HIT_MAX_HEIGHT) return;   /** HIT_MAX_HEIGHTより高いと届かない */
 
 	/** 狙いの値を範囲内に収める */
 	float aimX = intent.aimX;
@@ -190,9 +195,16 @@ void Character::UpdateRally(const Intent& intent)
 	float distFromNet = RALLY_DIST_NEAR + (RALLY_DIST_FAR - RALLY_DIST_NEAR);
 
 	Vector3 target;
-	target.x = aimX * RALLY_AIM_X;
-	target.y = GROUND_Y;
-	target.z = NET_Z + m_serveDirZ * distFromNet;
+	target.x = aimX * RALLY_AIM_X; /** 左右:狙い×幅 */
+	target.y = GROUND_Y; /** 地面に着地させる */
+	target.z = NET_Z + m_serveDirZ * distFromNet; /** 相手コートに打ち返す */
+
+	/** 打点の高さ(足元基準)から飛行時間を決める */
+	float t = (height - HIT_HEIGHT_LOW) / (HIT_HEIGHT_HIGH - HIT_HEIGHT_LOW);
+	if (t < 0.0f) t = 0.0f;
+	if (t > 1.0f) t = 1.0f;   /** 0:低い 〜 1:高い */
+
+	float flightTime = RALLY_TIME_LOW + t * (RALLY_TIME_HIGH - RALLY_TIME_LOW);
 
 	/** サーブと同じ逆算で打ち返す */
 	Vector3 vel = CalcHitVelocity(m_ball->GetPosition(), target, RALLY_FLIGHT_TIME);

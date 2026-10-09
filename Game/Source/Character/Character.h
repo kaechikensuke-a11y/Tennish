@@ -71,7 +71,7 @@ protected:
 
 	ServeState m_serveState = ServeState::en_Ready; /** 今のサーブ状態 */
 	Ball* m_ball = nullptr; /** ボールへのポインタ */
-	float m_serveDirZ = 1.0f; /** 相手コートの方向 */
+	float m_serveDirZ = 1.0f; /** コートの方向(1なら奥に、-1なら手前) */
 
 	/** 返したIntentをもとにCharacterが動く */
 	virtual Intent DecideIntent() = 0;

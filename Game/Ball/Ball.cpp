@@ -7,7 +7,7 @@ namespace
 	const char* BALL_MODEL_PATH = "Assets/model/Ball/Ball.tkm";
 
 	/** 重力 */
-	constexpr float GRAVITY = -980.0f;
+	constexpr float GRAVITY = -2500.0f;
 	/** 地面の高さ */
 	constexpr float GROUND_Y = -680.0f;
 	/** バウンドの強さ */
@@ -53,6 +53,8 @@ Vector3 Ball::PredictLanding() const
 
 	/** ？ */
 	float disc = m_ballSpeed.y * m_ballSpeed.y - 2.0f * GRAVITY * h;
+
+	/** 着地までの時間 */
 	float t = (-m_ballSpeed.y - sqrtf(disc)) / GRAVITY;
 
 	/** 水平方向は等速なので、t秒後の位置がそのまま着地点 */

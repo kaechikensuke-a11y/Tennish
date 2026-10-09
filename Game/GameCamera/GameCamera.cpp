@@ -5,7 +5,7 @@ namespace
 	/** 注視点 */
 	const Vector3 TARGET_POS = { 0.0f,0.0f,500.0f };
 	/** 固定カメラの座標 */
-	const Vector3 FIXEDCAMERA_POS = { 0.0f,3000.0f,-3500.0f };
+	const Vector3 FIXEDCAMERA_POS = { 0.0f,1900.0f,-3500.0f };
 }
 
 
