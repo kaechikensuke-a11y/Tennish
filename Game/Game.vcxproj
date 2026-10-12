@@ -227,9 +227,13 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera\GameCamera.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SoundManager\BGM\BGM.cpp" />
+    <ClCompile Include="SoundManager\SE\SE.cpp" />
+    <ClCompile Include="SoundManager\SoundManager.cpp" />
     <ClCompile Include="Source\Character\Character.cpp" />
     <ClCompile Include="Source\Character\Enemy\Enemy.cpp" />
     <ClCompile Include="Source\Character\Player\Player.cpp" />
+    <ClCompile Include="Source\Character\Shot\Shot.cpp" />
     <ClCompile Include="Source\Stage\TennisCourt.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -242,9 +246,13 @@
     <ClInclude Include="Ball\Ball.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera\GameCamera.h" />
+    <ClInclude Include="SoundManager\BGM\BGM.h" />
+    <ClInclude Include="SoundManager\SE\SE.h" />
+    <ClInclude Include="SoundManager\SoundManager.h" />
     <ClInclude Include="Source\Character\Character.h" />
     <ClInclude Include="Source\Character\Enemy\Enemy.h" />
     <ClInclude Include="Source\Character\Player\Player.h" />
+    <ClInclude Include="Source\Character\Shot\Shot.h" />
     <ClInclude Include="Source\Stage\TennisCourt.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />

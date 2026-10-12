@@ -25,6 +25,18 @@
     <Filter Include="Source\Character\Enemy">
       <UniqueIdentifier>{4b0a7705-65c0-426f-9ab4-cfe51fbc066f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Character\Shot">
+      <UniqueIdentifier>{7a1ee890-d5d7-46ed-ab54-4026b5919444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SoundManager">
+      <UniqueIdentifier>{fe488c17-a04b-4a52-bb1f-14aae0965fb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SoundManager\BGM">
+      <UniqueIdentifier>{b550f3eb-7f44-4948-82d0-77faed4bdc76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SoundManager\SE">
+      <UniqueIdentifier>{358c1427-d78d-42e4-9792-bf5d12411fc4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -51,6 +63,18 @@
     <ClCompile Include="Source\Character\Enemy\Enemy.cpp">
       <Filter>Source\Character\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Character\Shot\Shot.cpp">
+      <Filter>Source\Character\Shot</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager\SoundManager.cpp">
+      <Filter>SoundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager\BGM\BGM.cpp">
+      <Filter>SoundManager\BGM</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager\SE\SE.cpp">
+      <Filter>SoundManager\SE</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -75,6 +99,18 @@
     </ClInclude>
     <ClInclude Include="Source\Character\Enemy\Enemy.h">
       <Filter>Source\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Character\Shot\Shot.h">
+      <Filter>Source\Character\Shot</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager\SoundManager.h">
+      <Filter>SoundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager\SE\SE.h">
+      <Filter>SoundManager\SE</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager\BGM\BGM.h">
+      <Filter>SoundManager\BGM</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
