@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Character.h"
 #include "Ball/Ball.h"
+#include "SoundManager/SoundManager.h"
+#include "SoundManager/SE/SE.h"
 
 namespace
 {
@@ -119,6 +121,7 @@ void Character::UpdateServe(const Intent& intent)
 		{
 			m_ball->SetHeld(false); /** 物理計算を再開 */
 			m_ball->SetVelocity(Vector3(0.0f, TOSS_SPEED, 0.0f)); /** 真上に投げる */
+
 			m_tossTimer = 0.0f; /** 経過時間を0から数える */
 			m_serveState = ServeState::en_Tossed;
 		}
@@ -146,6 +149,9 @@ void Character::UpdateServe(const Intent& intent)
 			/** 打点からtargetへ1秒で着地する初速を逆算 */
 			Vector3 vel = CalcHitVelocity(m_ball->GetPosition(), target, SERVE_FLIGHT_TIME);
 			m_ball->SetVelocity(vel);
+
+			/** サーブを打つ音 */
+			SoundManager::GetInstance()->PlaySE(SEType::en_ShotSE);
 
 			/** トス中のバウンドを数えない */
 			m_ball->ResetBounceCount();
@@ -209,6 +215,10 @@ void Character::UpdateRally(const Intent& intent)
 	/** サーブと同じ逆算で打ち返す */
 	Vector3 vel = CalcHitVelocity(m_ball->GetPosition(), target, RALLY_FLIGHT_TIME);
 	m_ball->SetVelocity(vel);
+
+	/** 打ち返す音 */
+	SoundManager::GetInstance()->PlaySE(SEType::en_ShotSE);
+
 	m_ball->ResetBounceCount();  /** 打ち返したのでバウンド数を戻す */
 
 	/** レシーブ側もここからラリー中の扱いになる */
