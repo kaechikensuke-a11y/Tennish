@@ -1,4 +1,5 @@
 #pragma once
+#include "Source/Character/Shot/Shot.h"
 class Ball;
 /** 誰が操作しても同じ処理をまとめる */
 class Character : public IGameObject
@@ -16,7 +17,8 @@ public:
 	void SetPosition(const Vector3& pos) { m_position = pos; }
 
 	/** fromからtargetへflightTime秒で着地するための初速を計算して返す */
-	Vector3 CalcHitVelocity(const Vector3& from, const Vector3& target, float flightTime) const;
+	Vector3 CalcHitVelocity(const Vector3& from, const Vector3& target,
+		float flightTime, float gravityScale = 1.0f) const;
 
 	/*
 	 * サーブ権の設定(生成直後) 
@@ -54,13 +56,15 @@ protected:
 		en_Done    /** サーブ完了(ここからラリーを開始する) */
 	};
 
-	/** どう動きたいかをまとめたもの */
 	struct Intent
 	{
-		float moveX  = 0.0f; /** 左、右 */
-		float moveZ  = 0.0f; /** 奥、手前 */
-		bool isSwing = false; /** ボタンを押したかどうか */ 
-		float aimX = 0.0f;   /** 打つ左右の狙い */
+		float    moveX   = 0.0f;                /** 左、右 */
+		float    moveZ   = 0.0f;				/** 奥、手前 */
+		bool    isSwing  = false;				/** 打つ(チャージショットの場合離した瞬間) */
+		float    aimX    = 0.0f;				/** 打つ左右の狙い */
+		ShotType  shot   = ShotType::en_Normal;	/** どのショットか */
+		int  chargeLevel = 0;					/** チャージ段階(0～2) */
+		bool isCharging  = false;				/** チャージ中かどうか */
 	};
 
 	/** サーブの状態を1フレーム進める */
@@ -81,6 +85,9 @@ protected:
 
 	/** トスしてからの経過時間 */
 	float m_tossTimer = 0.0f;
+
+	/** トスの最高点に達するまでの時間 */
+	float GetTossApexTime() const;
 
 	/** ボールが自分のコートに向かって飛んできているか */
 	bool IsBallComing() const;

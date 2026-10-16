@@ -11,6 +11,9 @@ private:
 	/** npcがトスしてから打つまでの時間 */
 	float m_npcTimer = 0.0f;
 
+	/** 今回のサーブで打つまでの時間(ジャストなら最高点) */
+	float m_npcHitDelay = 0.65f; 
+
 	/** ボールを追いかけて、近づいたら打つ */
 	void ChaseBall(Intent& intent);
 };

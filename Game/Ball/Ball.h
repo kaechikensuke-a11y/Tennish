@@ -26,6 +26,14 @@ public:
 	/** ボールのバウンド等関数 */
 	int GetBounceCount() const { return m_bounceCount; }
 	void ResetBounceCount() { m_bounceCount = 0; }
+
+	void SetShotEffect(float curveAccelX, float gravityScale, float bounceScale)
+	{
+		m_curveAccelX = curveAccelX;
+		m_gravityScale = gravityScale;
+		m_bounceScale = bounceScale;
+	}
+
 private:
 	/** ボールのモデル */
 	ModelRender m_ballRender;
@@ -38,6 +46,10 @@ private:
 
 	/** ボールを持っているかどうか */
 	bool m_isHeld = true;
+
+	float m_curveAccelX = 0.0f;
+	float m_gravityScale = 1.0f;
+	float m_bounceScale = 1.0f;
 
 	/** ボールのバウンド回数 */
 	uint8_t m_bounceCount = 0;

@@ -9,19 +9,16 @@ namespace
 	const char* BLUE_PLAYER_MODEL_PATH = "Assets/model/Player/TennisPlayerBlue.tkm";
 	constexpr float PLAYER_POSITION_Y = -900.0f;
 
-	constexpr float TOSS_SPEED  =  1500.0f; /** トスで上に投げる速さ */
-	constexpr float SERVE_SPEED = 2000.0f; /** サーブ前方への速さ */
-	constexpr float SERVE_UP    =  2500.0f; /** サーブ上向きの速さ */
-	constexpr float HAND_HEIGHT =  350.0f; /** 足元から手までの高さ */
-	constexpr float SWING_ENABLE_TIME = 0.3f; /** トス後、打てるようになるまでの時間 */
+	constexpr float TOSS_SPEED        =  1100.0f; /** トスで上に投げる速さ */
+	constexpr float HAND_HEIGHT       =  350.0f;  /** 足元から手までの高さ */
+	constexpr float SWING_ENABLE_TIME =    0.3f;  /** トス後、打てるようになるまでの時間 */
 
 	/** Ball.cppと同じ値にする */
-	constexpr float GRAVITY           = -2500.0f; /** 重力 */
-	constexpr float GROUND_Y          = -680.0f; /** 地面の高さ */
+	constexpr float GRAVITY           = -1200.0f; /** 重力 */
+	constexpr float GROUND_Y          =  -680.0f; /** 地面の高さ */
 
-	constexpr float SERVE_FLIGHT_TIME =    1.4f;/** 打ってから着地までの時間 */
+	constexpr float SERVE_FLIGHT_TIME =    2.0f;/** 打ってから着地までの時間 */
 	constexpr float SERVICE_BOX_X     =  550.0f;/** サービスボックス中央のX */
-	constexpr float SERVICE_LINE_Z    = 5500.0f;/** 着地地点 */
 	constexpr float AIM_RANGE_X       =  500.0f;/** スティック操作で狙いを決める */
 
 	constexpr float NET_Z = 4000.0f; /** ネットのZ座標 */
@@ -29,15 +26,19 @@ namespace
 
 	constexpr float HIT_RANGE         =  600.0f; /** ボールを打てる水平距離 */
 	constexpr float HIT_MAX_HEIGHT	  = 1500.0f; /** 足元からこの高さまでなら打てる */
-	constexpr float RALLY_FLIGHT_TIME =    1.3f; /** 打ち返してから着地するまでの時間 */
-	constexpr float RALLY_AIM_X		  = 1000.0f; /** 左右の幅 */
 	constexpr float RALLY_DIST_NEAR	  = 1500.0f; /** ネット寄りに落ちる */
 	constexpr float RALLY_DIST_FAR	  = 3500.0f; /** ベースラインに落ちる */
 
-	constexpr float RALLY_TIME_LOW = 1.8f;  /** 打点が低いときの飛行時間 */
-	constexpr float RALLY_TIME_HIGH = 1.1f;  /** 打点が高いときの飛行時間 */
-	constexpr float HIT_HEIGHT_LOW = 220.0f; /** 足元からこの高さ以下なら */
+	constexpr float RALLY_TIME_LOW  =    1.2f; /** 打点が低いときの飛行時間 */
+	constexpr float RALLY_TIME_HIGH =    1.0f; /** 打点が高いときの飛行時間 */
+	constexpr float HIT_HEIGHT_LOW  =  220.0f; /** 足元からこの高さ以下なら */
 	constexpr float HIT_HEIGHT_HIGH = 1100.0f; /** 足元からこの高さ以上なら */
+
+	constexpr float SERVE_FLIGHT_TIME_JUST = 2.0f; /** サーブの飛行時間 */
+	constexpr float JUST_SERVE_WINDOW       = 0.2f;	/** ジャストサーブになる時間 */
+
+	/** チャージ中の移動速度の倍率 */
+	constexpr float CHARGE_SPEED_RATE[3] = { 2.0f / 3.0f,1.0f / 2.0f,1.0f / 3.0f };
 }
 
 bool Character::Start()
@@ -70,9 +71,17 @@ void Character::Update()
 	/** 移動できる状態なら */
 	if (isMove)
 	{
+		/** チャージ中は段階に応じて移動を遅くする */
+		float speedRate = 1.0f;
+
+		if (intent.isCharging)
+		{
+			speedRate = CHARGE_SPEED_RATE[intent.chargeLevel];
+		}
+
 		/** 座標を動かす */
-		m_position.x += intent.moveX * m_speed * dt;
-		m_position.z += intent.moveZ * m_speed * dt;
+		m_position.x += intent.moveX * m_speed * speedRate * dt;
+		m_position.z += intent.moveZ * m_speed * speedRate * dt;
 
 		/** スティックを倒しているときだけ向きを変える */
 		if (fabsf(intent.moveX) > 0.001f || fabsf(intent.moveZ) > 0.001f)
@@ -134,6 +143,10 @@ void Character::UpdateServe(const Intent& intent)
 		/** もう一度ボタンで打つ */
 		if (intent.isSwing && m_tossTimer > SWING_ENABLE_TIME)
 		{
+			/** 一番高い位置にあるボールを打てたらジャストサーブ */
+			bool isJust = fabsf(m_tossTimer - GetTossApexTime()) <= JUST_SERVE_WINDOW;
+			float flightTime = isJust ? SERVE_FLIGHT_TIME_JUST : SERVE_FLIGHT_TIME;
+
 			/*
 			 * 自分の立ち位置と対角線を狙う
 			 * 自分が左にいれば+1,右にいれば-1にして対角線を狙う
@@ -146,8 +159,9 @@ void Character::UpdateServe(const Intent& intent)
 			target.y = GROUND_Y; /** 地面に着地させる */
 			target.z = NET_Z + m_serveDirZ * (SERVICE_LINE_DIST * 0.6f); /** ネットから相手側へ */
 			
+
 			/** 打点からtargetへ1秒で着地する初速を逆算 */
-			Vector3 vel = CalcHitVelocity(m_ball->GetPosition(), target, SERVE_FLIGHT_TIME);
+			Vector3 vel = CalcHitVelocity(m_ball->GetPosition(), target, flightTime);
 			m_ball->SetVelocity(vel);
 
 			/** サーブを打つ音 */
@@ -163,6 +177,12 @@ void Character::UpdateServe(const Intent& intent)
 	case ServeState::en_Done:
 		break;
 	}
+}
+
+float Character::GetTossApexTime() const
+{
+	/** 上向き / 重力 = 最高点に着くまでの時間 */
+	return TOSS_SPEED / fabsf(GRAVITY);
 }
 
 bool Character::IsBallComing() const
@@ -197,43 +217,51 @@ void Character::UpdateRally(const Intent& intent)
 	if (aimX > 1.0f) aimX = 1.0f;
 	if (aimX < -1.0f) aimX = -1.0f;
 
-	/** 着地させたい地点(ネット基準で、相手コートの中) */
-	float distFromNet = RALLY_DIST_NEAR + (RALLY_DIST_FAR - RALLY_DIST_NEAR);
+	float baseDist = (RALLY_DIST_NEAR + RALLY_DIST_FAR) * 0.5f;
 
-	Vector3 target;
-	target.x = aimX * RALLY_AIM_X; /** 左右:狙い×幅 */
-	target.y = GROUND_Y; /** 地面に着地させる */
-	target.z = NET_Z + m_serveDirZ * distFromNet; /** 相手コートに打ち返す */
-
-	/** 打点の高さ(足元基準)から飛行時間を決める */
+	/** 基本の飛行時間(打点が低いほど長く、高いほど短い) */
 	float t = (height - HIT_HEIGHT_LOW) / (HIT_HEIGHT_HIGH - HIT_HEIGHT_LOW);
 	if (t < 0.0f) t = 0.0f;
-	if (t > 1.0f) t = 1.0f;   /** 0:低い 〜 1:高い */
+	if (t > 1.0f) t = 1.0f;
+	float baseTime = RALLY_TIME_LOW + t * (RALLY_TIME_HIGH - RALLY_TIME_LOW);
 
-	float flightTime = RALLY_TIME_LOW + t * (RALLY_TIME_HIGH - RALLY_TIME_LOW);
+	/** ショットの種類とチャージ段階から弾道パラメータを作る */
+	ShotParam sp = MakeShotParam(intent.shot, intent.chargeLevel,
+		baseDist, baseTime, aimX, m_position.x);
 
-	/** サーブと同じ逆算で打ち返す */
-	Vector3 vel = CalcHitVelocity(m_ball->GetPosition(), target, RALLY_FLIGHT_TIME);
+	Vector3 target;
+	target.x = aimX * sp.aimWidth;
+	target.y = GROUND_Y; /** 地面に着地させる */
+	target.z = NET_Z + m_serveDirZ * sp.distFromNet; /** 相手コートに打ち返す */
+
+	/*
+	 * 戻りカーブ: 曲がる分を見越して、打ち出しを反対側へずらす。
+	 * 横の曲がり量は 1/2*a*t^2 なので、それを引いた地点を狙えば
+	 * 曲がった結果が target に着地する
+	 */
+	Vector3 aimPoint = target;
+	aimPoint.x -= 0.5f * sp.curveAccel * sp.flightTime * sp.flightTime;
+
+	Vector3 vel = CalcHitVelocity(m_ball->GetPosition(), aimPoint, sp.flightTime, sp.gravityScale);
 	m_ball->SetVelocity(vel);
+	m_ball->SetShotEffect(sp.curveAccel, sp.gravityScale, sp.bounceScale);
 
-	/** 打ち返す音 */
 	SoundManager::GetInstance()->PlaySE(SEType::en_ShotSE);
 
-	m_ball->ResetBounceCount();  /** 打ち返したのでバウンド数を戻す */
-
-	/** レシーブ側もここからラリー中の扱いになる */
+	m_ball->ResetBounceCount();
 	m_serveState = ServeState::en_Done;
 }
 
-Vector3 Character::CalcHitVelocity(const Vector3& from, const Vector3& target, float flightTime) const
+Vector3 Character::CalcHitVelocity(const Vector3& from, const Vector3& target, float flightTime,float gravityScale) const
 {
 	Vector3 vel;
 
-	/** 水平方向は重力が働かないので、速度 = 距離 / 時間 */
+	/** ボールに掛かる重力に合わせる(ドライブは重力が強い) */
+	float g = GRAVITY * gravityScale;
+
 	vel.x = (target.x - from.x) / flightTime;
 	vel.z = (target.z - from.z) / flightTime;
-
-	vel.y = (target.y - from.y - 0.5f * GRAVITY * flightTime * flightTime) / flightTime;
+	vel.y = (target.y - from.y - 0.5f * g * flightTime * flightTime) / flightTime;
 	return vel;
 }
 
