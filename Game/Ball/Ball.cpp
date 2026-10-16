@@ -7,7 +7,7 @@ namespace
 	const char* BALL_MODEL_PATH = "Assets/model/Ball/Ball.tkm";
 
 	/** 重力 */
-	constexpr float GRAVITY = -2500.0f;
+	constexpr float GRAVITY = -1200.0f;
 	/** 地面の高さ */
 	constexpr float GROUND_Y = -680.0f;
 	/** バウンドの強さ */
@@ -29,14 +29,27 @@ void Ball::Update()
 	{
 		float dt = g_gameTime->GetFrameDeltaTime();
 
-		m_ballSpeed.y += GRAVITY * dt;
+		/** 重力とカーブの */
+		m_ballSpeed.y += GRAVITY * m_gravityScale * dt;
+		m_ballSpeed.x += m_curveAccelX * dt;
+
+		/** 位置更新を行う */
 		m_ballPosition += m_ballSpeed * dt;
 
 		/** 地面でバウンドさせる */
 		if (m_ballPosition.y < GROUND_Y)
 		{
 			m_ballPosition.y = GROUND_Y;
-			m_ballSpeed.y *= -BOUNCE;
+
+			m_ballSpeed.y *= -BOUNCE * m_bounceScale;
+			m_ballSpeed.x *= m_bounceScale;
+			m_ballSpeed.z *= m_bounceScale;
+
+			/** 着地したらショットの効果は終わり */
+			m_curveAccelX = 0.0f;
+			m_gravityScale = 1.0f;
+			m_bounceScale = 1.0f;
+
 			m_bounceCount++;
 		}
 	}
@@ -47,18 +60,17 @@ void Ball::Update()
 
 Vector3 Ball::PredictLanding() const
 {
-	/** 地面までの高さ */
+	float g = GRAVITY * m_gravityScale;
 	float h = m_ballPosition.y - GROUND_Y;
 	if (h < 0.0f) h = 0.0f;
 
-	/** ？ */
-	float disc = m_ballSpeed.y * m_ballSpeed.y - 2.0f * GRAVITY * h;
+	float disc = m_ballSpeed.y * m_ballSpeed.y - 2.0f * g * h;
+	float t = (-m_ballSpeed.y - sqrtf(disc)) / g;
 
-	/** 着地までの時間 */
-	float t = (-m_ballSpeed.y - sqrtf(disc)) / GRAVITY;
-
-	/** 水平方向は等速なので、t秒後の位置がそのまま着地点 */
-	return Vector3(m_ballPosition.x + m_ballSpeed.x * t, GROUND_Y, m_ballPosition.z + m_ballSpeed.z * t);
+	/** 水平は等速 + カーブの加速度分 */
+	return Vector3(m_ballPosition.x + m_ballSpeed.x * t + 0.5f * m_curveAccelX * t * t,
+		GROUND_Y,
+		m_ballPosition.z + m_ballSpeed.z * t);
 
 }
 

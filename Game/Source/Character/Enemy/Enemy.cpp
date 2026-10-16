@@ -11,7 +11,9 @@ namespace
 	constexpr float NPC_HIT_DELAY = 0.65f;/** トスしてから打つまでの時間 */
 
 	constexpr float NPC_STOP_DIST   = 50.0f;  /** 目標地点にこれだけ近づいたら止まる */
-constexpr float NPC_SWING_RANGE = 400.0f; /** この距離に入ったらスイング */
+	constexpr float NPC_SWING_RANGE = 400.0f; /** この距離に入ったらスイング */
+
+	constexpr int NPC_JUST_SERVE_ODDS = 10; /** 1/10 でジャストサーブ(将来は難易度で変える) */
 }
 
 Enemy::Enemy()
@@ -42,17 +44,18 @@ Enemy::Intent Enemy::DecideIntent()
 			/** トス */
 			intent.isSwing = true;
 			m_npcTimer = 0.0f;
+
+			/** トスする時点で、今回ジャストを狙うか決める */
+			bool isJust = (rand() % NPC_JUST_SERVE_ODDS) == 0;
+			m_npcHitDelay = isJust ? GetTossApexTime() : NPC_HIT_DELAY;
 		}
 		break;
 
 	case ServeState::en_Tossed:
-		/** トスが上がった後に打つ */
-		m_npcTimer += dt;
-		if (m_npcTimer > NPC_HIT_DELAY)
+		/** トスからの経過時間(Character の m_tossTimer)で打つ */
+		if (m_tossTimer > m_npcHitDelay)
 		{
-			/** 時間経過で打つ */
 			intent.isSwing = true;
-			m_npcTimer = 0.0f;
 		}
 		break;
 	case ServeState::en_Done:
@@ -88,11 +91,18 @@ void Enemy::ChaseBall(Intent& intent)
 	/** ボールが近ければスイング(届かなければ Character 側で無視される) */
 	Vector3 toBall = m_ball->GetPosition() - m_position;
 	toBall.y = 0.0f;
+
 	if (toBall.Length() < NPC_SWING_RANGE)
 	{
 		intent.isSwing = true;
+		intent.aimX = (rand() % 100 - 50) / 60.0f;
 
-		/** 狙いを決める */
-		intent.aimX = (rand() % 100 - 50) / 60.0f;  /** 約 -0.8〜0.8 */
+		/** 6割は通常、残りを他のショットに振り分ける */
+		int r = rand() % 10;
+		if (r < 6) intent.shot = ShotType::en_Normal;
+		else if (r < 7) intent.shot = ShotType::en_BackSpin;
+		else if (r < 9) intent.shot = ShotType::en_TopSpin;
+		else            intent.shot = ShotType::en_Curve;
 	}
+	
 }
