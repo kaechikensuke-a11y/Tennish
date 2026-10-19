@@ -227,6 +227,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera\GameCamera.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scene\Title\Title.cpp" />
     <ClCompile Include="SoundManager\BGM\BGM.cpp" />
     <ClCompile Include="SoundManager\SE\SE.cpp" />
     <ClCompile Include="SoundManager\SoundManager.cpp" />
@@ -246,6 +247,7 @@
     <ClInclude Include="Ball\Ball.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera\GameCamera.h" />
+    <ClInclude Include="Scene\Title\Title.h" />
     <ClInclude Include="SoundManager\BGM\BGM.h" />
     <ClInclude Include="SoundManager\SE\SE.h" />
     <ClInclude Include="SoundManager\SoundManager.h" />

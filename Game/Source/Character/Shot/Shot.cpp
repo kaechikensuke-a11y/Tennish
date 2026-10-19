@@ -50,11 +50,11 @@ ShotParam MakeShotParam(ShotType type, int level, float baseDist,
 	const ShotTable& t = TABLES[(int)type];
 
 	ShotParam p;
-	p.distFromNet = baseDist * t.dist[level];
-	p.flightTime = baseTime * t.time[level];
-	p.gravityScale = t.gravity[level];
-	p.bounceScale = t.bounce[level];
-	p.aimWidth = COURT_HALF_WIDTH * t.aimRate;
+	p.distFromNet = baseDist * t.dist[level];  /** 着地の深さ */
+	p.flightTime = baseTime * t.time[level];   /** 飛行時間 */
+	p.gravityScale = t.gravity[level];		   /** 重力倍率 */
+	p.bounceScale = t.bounce[level];		   /** 跳ね返りの倍率 */
+	p.aimWidth = COURT_HALF_WIDTH * t.aimRate; /** 左右に狙える幅 */
 
 	/*
 	 * 曲がり幅(bulge): 打ち出しの線と着地点の横のズレ。符号が曲がる向き。
@@ -70,6 +70,7 @@ ShotParam MakeShotParam(ShotType type, int level, float baseDist,
 
 	case ShotType::en_Curve:
 	{
+		/** Xボタンを押すと必ず曲がるようにする */
 		float dir;
 		if (fabsf(aimX) > STICK_DEADZONE)
 		{
