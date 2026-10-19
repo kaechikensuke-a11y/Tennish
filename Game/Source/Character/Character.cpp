@@ -207,7 +207,7 @@ void Character::UpdateRally(const Intent& intent)
 
 	/** ボールが届く範囲にあるか */
 	Vector3 diff = m_ball->GetPosition() - m_position;
-	float height = diff.y;
+	float height = diff.y;                 /** 足元からボールの高さ */
 	diff.y = 0.0f;                         /** 水平距離だけで判定 */
 	if (diff.Length() > HIT_RANGE) return; /** HIT_RANGEより遠かったら打ち返せない */
 	if (height > HIT_MAX_HEIGHT) return;   /** HIT_MAX_HEIGHTより高いと届かない */
@@ -217,6 +217,7 @@ void Character::UpdateRally(const Intent& intent)
 	if (aimX > 1.0f) aimX = 1.0f;
 	if (aimX < -1.0f) aimX = -1.0f;
 
+	/** 基準の着地距離 */
 	float baseDist = (RALLY_DIST_NEAR + RALLY_DIST_FAR) * 0.5f;
 
 	/** 基本の飛行時間(打点が低いほど長く、高いほど短い) */

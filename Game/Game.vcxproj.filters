@@ -37,6 +37,12 @@
     <Filter Include="SoundManager\SE">
       <UniqueIdentifier>{358c1427-d78d-42e4-9792-bf5d12411fc4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{afd04ca4-0476-4ed9-9a15-f972336f7124}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Title">
+      <UniqueIdentifier>{7f245f10-1088-4473-94ef-fc0a680534d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -75,6 +81,9 @@
     <ClCompile Include="SoundManager\SE\SE.cpp">
       <Filter>SoundManager\SE</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\Title\Title.cpp">
+      <Filter>Scene\Title</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -111,6 +120,9 @@
     </ClInclude>
     <ClInclude Include="SoundManager\BGM\BGM.h">
       <Filter>SoundManager\BGM</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Title\Title.h">
+      <Filter>Scene\Title</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

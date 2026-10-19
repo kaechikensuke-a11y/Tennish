@@ -13,7 +13,7 @@ namespace
 		return false;
 	}
 
-	/** そのショットのボタンを押し続けているか */
+	/** そのショットのボタンを押し続けているか(離した瞬間に打ち返す) */
 	bool IsPressShot(ShotType shot)
 	{
 		switch (shot)
@@ -31,6 +31,7 @@ namespace
 	{
 		Intent intent;
 
+		/** 左スティックで移動 */
 		intent.moveX = g_pad[0]->GetLStickXF();
 		intent.moveZ = g_pad[0]->GetLStickYF();
 		intent.aimX = intent.moveX; /** 左右の狙い兼カーブの向き */
@@ -38,6 +39,7 @@ namespace
 		ShotType trigger;
 
 		/** サーブ中(トス・打つ)はチャージなし。押した瞬間に動く */
+		/** サーブはどのB/A/Y/X度のボタンを押してもサーブが打てるようにする(どのボタンを押しても同じ動き) */
 		if (m_serveState == ServeState::en_Ready || m_serveState == ServeState::en_Tossed)
 		{
 			m_isCharging = false;
@@ -56,18 +58,20 @@ namespace
 			if (GetTriggerShot(trigger))
 			{
 				m_isCharging = true;
-				m_chargeShot = trigger;
+				m_chargeShot = trigger; /** どのボタンでチャージしているか記録 */
 				m_chargeTime = 0.0f;
 			}
 		}
 		else
 		{
+			/** チャージ中は押している時間を数える */
 			m_chargeTime += g_gameTime->GetFrameDeltaTime();
 
 			if (IsPressShot(m_chargeShot))
 			{
 				/** チャージ継続中: 移動を遅くするため段階を渡す */
 				intent.isCharging = true;
+				/** 0.5秒でLv.1  1.0秒でLv.2にする */
 				intent.chargeLevel = CalcChargeLevel(m_chargeTime);
 			}
 			else
@@ -77,6 +81,7 @@ namespace
 				intent.shot = m_chargeShot;
 				intent.chargeLevel = CalcChargeLevel(m_chargeTime);
 
+				/** 打った後に初期化する */
 				m_isCharging = false;
 				m_chargeTime = 0.0f;
 			}
