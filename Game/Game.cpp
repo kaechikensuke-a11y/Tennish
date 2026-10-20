@@ -5,7 +5,6 @@
 #include "Source/Stage/TennisCourt.h"
 #include "GameCamera/GameCamera.h"
 #include "Ball/Ball.h"
-#include "SoundManager/SoundManager.h"
 
 namespace
 {
@@ -20,7 +19,6 @@ namespace
 
 bool Game::Start()
 {
-	NewGO<SoundManager>(0, "soundmanager");
 	NewGO<TennisCourt>(0, "tenniscourt");
 	NewGO<GameCamera>(0, "gamecamera");
 	m_player = NewGO<Player>(0, "player");
