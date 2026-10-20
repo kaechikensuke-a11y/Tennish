@@ -3,14 +3,19 @@
 class SE;
 class BGM;
 
+/** SEの種類 */
 enum class SEType
 {
 	en_ShotSE,
+	en_DecideSE,
+	en_SelectSE,
 	en_NumSE
 };
 
+/** BGMの種類 */
 enum class BGMType
 {
+	en_TitleBGM,
 	en_NumBGM
 };
 

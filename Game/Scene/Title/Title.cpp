@@ -2,6 +2,7 @@
 #include "Title.h"
 #include "SoundManager/SoundManager.h"
 #include "SoundManager/BGM/BGM.h"
+#include "SoundManager/SE/SE.h"
 #include "Game.h"
 namespace
 {
@@ -53,6 +54,8 @@ bool Title::Start()
 	m_setteiRender.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, SHADE));
 	m_setteiRender.Update();
 
+	SoundManager::GetInstance()->PlayBGM(BGMType::en_TitleBGM);
+
 	return true;
 }
 
@@ -70,6 +73,9 @@ void Title::Update()
 
 void Title::MoveSelect()
 {
+	/** 動かす前の選択を保存する */
+	Menu oldSelect = m_select;
+
 	/** 十字キー */
 	bool up   = g_pad[0]->IsTrigger(enButtonUp);
 	bool down = g_pad[0]->IsTrigger(enButtonDown);
@@ -91,6 +97,12 @@ void Title::MoveSelect()
 	/** 上で開始、下で設定 */
 	if  (up) m_select = Menu::en_Start;
 	if (down) m_select = Menu::en_Settei;
+
+	/** 選択が変わったときだけSEを鳴らす */
+	if (m_select != oldSelect)
+	{
+		SoundManager::GetInstance()->PlaySE(SEType::en_SelectSE);
+	}
 }
 
 void Title::Decide()
@@ -98,12 +110,16 @@ void Title::Decide()
 	switch (m_select)
 	{
 	case Menu::en_Start:
+		SoundManager::GetInstance()->PlaySE(SEType::en_DecideSE);
+		SoundManager::GetInstance()->StopBGM();
+
 		/** ゲームを開始してタイトル画面を消す */
 		NewGO<Game>(0, "game");
 		DeleteGO(this);
 		break;
 
 	case Menu::en_Settei:
+		SoundManager::GetInstance()->PlaySE(SEType::en_DecideSE);
 		/** 設定画面へ向かう */
 		DeleteGO(this);
 		break;
