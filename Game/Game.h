@@ -13,6 +13,9 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
+
+	FontRender m_debugFont;
+
 private:
 
 	void StartNextPoint();

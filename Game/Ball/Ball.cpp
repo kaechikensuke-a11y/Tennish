@@ -1,15 +1,12 @@
 #include "stdafx.h"
 #include "Ball.h"
+#include "Source/Court/CourtConst.h"
 
 namespace
 {
 	/** ボールのファイルパス */
 	const char* BALL_MODEL_PATH = "Assets/model/Ball/Ball.tkm";
 
-	/** 重力 */
-	constexpr float GRAVITY = -1200.0f;
-	/** 地面の高さ */
-	constexpr float GROUND_Y = -680.0f;
 	/** バウンドの強さ */
 	constexpr float BOUNCE = 0.7f;
 }
@@ -30,16 +27,40 @@ void Ball::Update()
 		float dt = g_gameTime->GetFrameDeltaTime();
 
 		/** 重力とカーブの */
-		m_ballSpeed.y += GRAVITY * m_gravityScale * dt;
+		m_ballSpeed.y += CourtConst::GRAVITY * m_gravityScale * dt;
 		m_ballSpeed.x += m_curveAccelX * dt;
+
+		/** 位置更新の前のZ座標を覚えておく */
+		float prevZ = m_ballPosition.z;
 
 		/** 位置更新を行う */
 		m_ballPosition += m_ballSpeed * dt;
 
-		/** 地面でバウンドさせる */
-		if (m_ballPosition.y < GROUND_Y)
+		/** ネットをまたいだか調べる(ネットにかかった後は調べない) */
+		if (!m_isHitNet)
 		{
-			m_ballPosition.y = GROUND_Y;
+			bool crossed = (prevZ - CourtConst::NET_Z) * (m_ballPosition.z - CourtConst::NET_Z) < 0.0f;
+			if (crossed)
+			{
+				if (m_ballPosition.y < CourtConst::GROUND_Y + CourtConst::NET_HEIGHT)
+				{
+					/** ネットより低かったらその場で落とす */
+					m_isHitNet = true;
+					m_ballPosition.z = prevZ;
+					m_ballSpeed.z = 0.0f;
+					m_ballSpeed.x = 0.0f;
+				}
+				else
+				{
+					m_isCrossedNet = true;
+				}
+			}
+		}
+
+		/** 地面でバウンドさせる */
+		if (m_ballPosition.y < CourtConst::GROUND_Y)
+		{
+			m_ballPosition.y = CourtConst::GROUND_Y;
 
 			m_ballSpeed.y *= -BOUNCE * m_bounceScale;
 			m_ballSpeed.x *= m_bounceScale;
@@ -50,6 +71,12 @@ void Ball::Update()
 			m_gravityScale = 1.0f;
 			m_bounceScale = 1.0f;
 
+			/** 1バウンド目だけ座標を記録する */
+			if (m_bounceCount == 0)
+			{
+				m_firstBouncePos = m_ballPosition;
+				m_isHasBounced = true;
+			}
 			m_bounceCount++;
 		}
 	}
@@ -60,8 +87,8 @@ void Ball::Update()
 
 Vector3 Ball::PredictLanding() const
 {
-	float g = GRAVITY * m_gravityScale;
-	float h = m_ballPosition.y - GROUND_Y;
+	float g = CourtConst::GRAVITY * m_gravityScale;
+	float h = m_ballPosition.y - CourtConst::GROUND_Y;
 	if (h < 0.0f) h = 0.0f;
 
 	float disc = m_ballSpeed.y * m_ballSpeed.y - 2.0f * g * h;
@@ -69,7 +96,7 @@ Vector3 Ball::PredictLanding() const
 
 	/** 水平は等速 + カーブの加速度分 */
 	return Vector3(m_ballPosition.x + m_ballSpeed.x * t + 0.5f * m_curveAccelX * t * t,
-		GROUND_Y,
+		CourtConst::GROUND_Y,
 		m_ballPosition.z + m_ballSpeed.z * t);
 
 }

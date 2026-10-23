@@ -235,6 +235,7 @@
     <ClCompile Include="Source\Character\Enemy\Enemy.cpp" />
     <ClCompile Include="Source\Character\Player\Player.cpp" />
     <ClCompile Include="Source\Character\Shot\Shot.cpp" />
+    <ClCompile Include="Source\Court\CourtConst.cpp" />
     <ClCompile Include="Source\Stage\TennisCourt.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -255,6 +256,7 @@
     <ClInclude Include="Source\Character\Enemy\Enemy.h" />
     <ClInclude Include="Source\Character\Player\Player.h" />
     <ClInclude Include="Source\Character\Shot\Shot.h" />
+    <ClInclude Include="Source\Court\CourtConst.h" />
     <ClInclude Include="Source\Stage\TennisCourt.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />

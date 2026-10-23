@@ -43,6 +43,9 @@
     <Filter Include="Scene\Title">
       <UniqueIdentifier>{7f245f10-1088-4473-94ef-fc0a680534d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Court">
+      <UniqueIdentifier>{7cac9871-047f-4d78-bc67-4294398064f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -84,6 +87,9 @@
     <ClCompile Include="Scene\Title\Title.cpp">
       <Filter>Scene\Title</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Court\CourtConst.cpp">
+      <Filter>Source\Court</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -123,6 +129,9 @@
     </ClInclude>
     <ClInclude Include="Scene\Title\Title.h">
       <Filter>Scene\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Court\CourtConst.h">
+      <Filter>Source\Court</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
