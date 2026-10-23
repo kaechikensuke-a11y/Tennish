@@ -33,12 +33,34 @@ bool Game::Start()
 
 	m_ball = NewGO<Ball>(0, "ball");
 
+	m_debugFont.SetPosition(0.0f, 0.0f, 0.0f); // 画面左上あたり
+	m_debugFont.SetScale(0.8f);
+	m_debugFont.SetColor(Vector4(1.0f, 1.0f, 0.0f, 1.0f)); // 黄色
+
 	return true;
 }
 
 void Game::Update()
 {
 	if (m_ball == nullptr) return;
+
+	wchar_t text[256];
+	const Vector3& pp = m_player->GetPosition();
+	const Vector3& bp = m_ball->GetPosition();
+
+	const Character* lh = m_ball->GetLastHitPlayer();
+	const wchar_t* who = (lh == m_player) ? L"Player" : (lh == m_enemy) ? L"Enemy" : L"None";
+	const Vector3& fb = m_ball->GetFirstBouncePos();
+
+	swprintf_s(text,
+		L"Player X:%.0f Z:%.0f\nBall X:%.0f Y:%.0f Z:%.0f\nLastHitter:%s Serve:%d\nBounce:%d X:%.0f Z:%.0f\nNetHit:%d Crossed:%d",
+		pp.x, pp.z, bp.x, bp.y, bp.z,
+		who, m_ball->IsServe() ? 1 : 0,
+		m_ball->HasBounced() ? 1 : 0, fb.x, fb.z,
+		m_ball->IsHitNet() ? 1 : 0, m_ball->HasCrossedNet() ? 1 : 0);
+	m_debugFont.SetText(text);
+	
+
 
 	/** ポイント終了を検知 */
 	if (!m_pointEnded && m_ball->GetBounceCount() >= POINT_END_BOUNCE)
@@ -76,5 +98,5 @@ void Game::StartNextPoint()
 
 void Game::Render(RenderContext& rc)
 {
-
+	m_debugFont.Draw(rc);
 }

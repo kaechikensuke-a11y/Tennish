@@ -1,4 +1,5 @@
 #pragma once
+class Character;
 class Ball : public IGameObject
 {
 public:
@@ -25,7 +26,14 @@ public:
 
 	/** ボールのバウンド等関数 */
 	int GetBounceCount() const { return m_bounceCount; }
-	void ResetBounceCount() { m_bounceCount = 0; }
+	void ResetBounceCount()
+	{ 
+		m_bounceCount = 0;
+		m_isHasBounced = false;
+		m_firstBouncePos = Vector3::Zero;
+		m_isHitNet = false;
+		m_isCrossedNet = false;
+	}
 
 	void SetShotEffect(float curveAccelX, float gravityScale, float bounceScale)
 	{
@@ -34,7 +42,28 @@ public:
 		m_bounceScale = bounceScale;
 	}
 
+	/** 最後に打った人 */
+	void SetLastHitPlayer(const Character* hit) { m_lastHitPlayer = hit; }
+	const Character* GetLastHitPlayer() const { return m_lastHitPlayer; }
+
+	/** 1バウンド目の記録 */
+	bool HasBounced() const { return m_isHasBounced; }
+	const Vector3& GetFirstBouncePos() const { return m_firstBouncePos; }
+
+	/** 今の球がサーブかどうか */
+	void SetServe(bool isServe) { m_isServe = isServe; }
+	bool IsServe() const { return m_isServe; }
+
+	/** ネットに引っかかったかどうか */
+	bool IsHitNet() const { return m_isHitNet; }
+
+	/** ネットが越えたかどうか */
+	bool HasCrossedNet() const { return m_isCrossedNet; }
+
 private:
+	/** 最後に打った人 */
+	const Character* m_lastHitPlayer = nullptr;
+
 	/** ボールのモデル */
 	ModelRender m_ballRender;
 
@@ -44,8 +73,23 @@ private:
 	/** ボールの速度 */
 	Vector3 m_ballSpeed = Vector3::Zero;
 
+	/** 1バウンド目の座標 */
+	Vector3 m_firstBouncePos = Vector3::Zero;
+
+	/** バウンドしたかどうか */
+	bool m_isHasBounced = false;
+
+	/** サーブの球かどうか */
+	bool m_isServe = false;
+
 	/** ボールを持っているかどうか */
 	bool m_isHeld = true;
+
+	/** ボールがネットに引っかかったかどうか */
+	bool m_isHitNet = false;
+
+	/** ボールがネットに越えたかどうか */
+	bool m_isCrossedNet = false;
 
 	float m_curveAccelX = 0.0f;
 	float m_gravityScale = 1.0f;

@@ -3,6 +3,7 @@
 #include "Ball/Ball.h"
 #include "SoundManager/SoundManager.h"
 #include "SoundManager/SE/SE.h"
+#include "Source/Court/CourtConst.h"
 
 namespace
 {
@@ -12,10 +13,6 @@ namespace
 	constexpr float TOSS_SPEED        =  1100.0f; /** トスで上に投げる速さ */
 	constexpr float HAND_HEIGHT       =  350.0f;  /** 足元から手までの高さ */
 	constexpr float SWING_ENABLE_TIME =    0.3f;  /** トス後、打てるようになるまでの時間 */
-
-	/** Ball.cppと同じ値にする */
-	constexpr float GRAVITY           = -1200.0f; /** 重力 */
-	constexpr float GROUND_Y          =  -680.0f; /** 地面の高さ */
 
 	constexpr float SERVE_FLIGHT_TIME =    2.0f;/** 打ってから着地までの時間 */
 	constexpr float SERVICE_BOX_X     =  550.0f;/** サービスボックス中央のX */
@@ -156,13 +153,14 @@ void Character::UpdateServe(const Intent& intent)
 			/** 着地地点を決める */
 			Vector3 target;
 			target.x = diagonal * SERVICE_BOX_X + intent.moveX * AIM_RANGE_X; /** 対角線ボックス中央+スティックで微調整 */
-			target.y = GROUND_Y; /** 地面に着地させる */
+			target.y = CourtConst::GROUND_Y; /** 地面に着地させる */
 			target.z = NET_Z + m_serveDirZ * (SERVICE_LINE_DIST * 0.6f); /** ネットから相手側へ */
 			
-
 			/** 打点からtargetへ1秒で着地する初速を逆算 */
 			Vector3 vel = CalcHitVelocity(m_ball->GetPosition(), target, flightTime);
 			m_ball->SetVelocity(vel);
+			m_ball->SetLastHitPlayer(this);
+			m_ball->SetServe(true);
 
 			/** サーブを打つ音 */
 			SoundManager::GetInstance()->PlaySE(SEType::en_ShotSE);
@@ -182,7 +180,7 @@ void Character::UpdateServe(const Intent& intent)
 float Character::GetTossApexTime() const
 {
 	/** 上向き / 重力 = 最高点に着くまでの時間 */
-	return TOSS_SPEED / fabsf(GRAVITY);
+	return TOSS_SPEED / fabsf(CourtConst::GRAVITY);
 }
 
 bool Character::IsBallComing() const
@@ -232,7 +230,7 @@ void Character::UpdateRally(const Intent& intent)
 
 	Vector3 target;
 	target.x = aimX * sp.aimWidth;
-	target.y = GROUND_Y; /** 地面に着地させる */
+	target.y = CourtConst::GROUND_Y; /** 地面に着地させる */
 	target.z = NET_Z + m_serveDirZ * sp.distFromNet; /** 相手コートに打ち返す */
 
 	/*
@@ -245,6 +243,8 @@ void Character::UpdateRally(const Intent& intent)
 
 	Vector3 vel = CalcHitVelocity(m_ball->GetPosition(), aimPoint, sp.flightTime, sp.gravityScale);
 	m_ball->SetVelocity(vel);
+	m_ball->SetLastHitPlayer(this);
+	m_ball->SetServe(false);
 	m_ball->SetShotEffect(sp.curveAccel, sp.gravityScale, sp.bounceScale);
 
 	SoundManager::GetInstance()->PlaySE(SEType::en_ShotSE);
@@ -258,7 +258,7 @@ Vector3 Character::CalcHitVelocity(const Vector3& from, const Vector3& target, f
 	Vector3 vel;
 
 	/** ボールに掛かる重力に合わせる(ドライブは重力が強い) */
-	float g = GRAVITY * gravityScale;
+	float g = CourtConst::GRAVITY * gravityScale;
 
 	vel.x = (target.x - from.x) / flightTime;
 	vel.z = (target.z - from.z) / flightTime;

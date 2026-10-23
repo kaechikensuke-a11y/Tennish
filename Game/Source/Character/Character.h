@@ -44,6 +44,8 @@ public:
 		m_tossTimer = 0.0f;/** 前のトスが上がる時間を初期化 */
 	}
 
+	const Vector3& GetPosition() const { return m_position; }
+
 /** 自分と子クラスのみ使える */
 protected:
 
