@@ -28,6 +28,6 @@ namespace CourtConst
 	constexpr float CENTER_LINE_X = -100.0f;
 
 	/** 地面からネットの高さ */
-	constexpr float NET_HEIGHT = 250.0f;
+	constexpr float NET_HEIGHT = 150.0f;
 }
 
