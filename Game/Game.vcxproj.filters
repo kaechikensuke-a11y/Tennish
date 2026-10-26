@@ -46,6 +46,9 @@
     <Filter Include="Source\Court">
       <UniqueIdentifier>{7cac9871-047f-4d78-bc67-4294398064f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Judge">
+      <UniqueIdentifier>{c1e7e480-5bad-4127-a3d4-8050dd5e8d5d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -90,6 +93,9 @@
     <ClCompile Include="Source\Court\CourtConst.cpp">
       <Filter>Source\Court</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Judge\PointJudge.cpp">
+      <Filter>Source\Judge</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -132,6 +138,9 @@
     </ClInclude>
     <ClInclude Include="Source\Court\CourtConst.h">
       <Filter>Source\Court</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Judge\PointJudge.h">
+      <Filter>Source\Judge</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Level3DRender/LevelRender.h"
+#include "Source/Judge/PointJudge.h"
 class Player;
 class Enemy;
 class Ball;
@@ -24,6 +25,9 @@ private:
 	Player* m_player = nullptr;
 	Enemy* m_enemy = nullptr;
 	Ball* m_ball = nullptr;
+
+	PointJudge  m_pointJudge;
+	PointResult m_pointResult;
 
 	/** 現在のサーブ権 */
 	bool m_playerServing = true;

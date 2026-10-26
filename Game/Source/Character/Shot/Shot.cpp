@@ -4,7 +4,7 @@
 namespace
 {
 	/** コートの左右幅の半分 */
-	constexpr float COURT_HALF_WIDTH = 1550.0f;
+	constexpr float COURT_HALF_WIDTH = 1850.0f;
 
 	/** Bの通常ショットの曲がり幅 */
 	constexpr float NORMAL_BULGE = 400.0f;
