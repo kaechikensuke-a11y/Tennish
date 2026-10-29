@@ -5,6 +5,8 @@
 #include "Source/Stage/TennisCourt.h"
 #include "GameCamera/GameCamera.h"
 #include "Ball/Ball.h"
+#include "Source/Score/ScoreManager.h"
+#include "Source/Score/ScoreUI.h"
 
 namespace
 {
@@ -13,6 +15,11 @@ namespace
 
 	const Vector3 PLAYER_SERVE_POS(1500.0f, 0.0f, -1000.0f);
 	const Vector3 ENEMY_SERVE_POS(-1500.0f, 0.0f, 9000.0f);
+}
+
+Game::~Game()
+{
+	DeleteGO(m_scoreUI);
 }
 
 bool Game::Start()
@@ -34,6 +41,14 @@ bool Game::Start()
 	m_debugFont.SetPosition(0.0f, 0.0f, 0.0f); // 画面左上あたり
 	m_debugFont.SetScale(0.8f);
 	m_debugFont.SetColor(Vector4(1.0f, 1.0f, 0.0f, 1.0f)); // 黄色
+
+	/** スコア管理と表示 */
+	MatchSettings ms;
+	ms.gamesToWin = 3;
+	m_scoreManager = std::make_unique<ScoreManager>(ms);
+
+	m_scoreUI = NewGO<ScoreUI>(0, "scoreui");
+	m_scoreUI->SetScoreManager(m_scoreManager.get());
 
 	return true;
 }
@@ -64,13 +79,20 @@ void Game::Update()
 	default: break;
 	}
 
+	wchar_t scoreText[128];
+	swprintf_s(scoreText, L"Score %hs-%hs  Games %d-%d  Server:%d",
+		m_scoreManager->GetPointText(ScoreManager::PLAYER),
+		m_scoreManager->GetPointText(ScoreManager::ENEMY),
+		m_scoreManager->GetGames(ScoreManager::PLAYER),
+		m_scoreManager->GetGames(ScoreManager::ENEMY),
+		m_scoreManager->GetServer());
 	swprintf_s(text,
-		L"Player X:%.0f Z:%.0f\nBall X:%.0f Y:%.0f Z:%.0f\nLastHitter:%s Serve:%d\nBounce:%d X:%.0f Z:%.0f\nNetHit:%d Crossed:%d\nWinner:%s Reason:%s",
+		L"Player X:%.0f Z:%.0f\nBall X:%.0f Y:%.0f Z:%.0f\nLastHitter:%s Serve:%d\nBounce:%d X:%.0f Z:%.0f\nNetHit:%d Crossed:%d\nWinner:%s Reason:%s\n%s",
 		pp.x, pp.z, bp.x, bp.y, bp.z,
 		who, m_ball->IsServe() ? 1 : 0,
 		m_ball->HasBounced() ? 1 : 0, fb.x, fb.z,
 		m_ball->IsHitNet() ? 1 : 0, m_ball->HasCrossedNet() ? 1 : 0,
-		winnerName, reasonName);
+		winnerName, reasonName, scoreText);
 	m_debugFont.SetText(text);
 
 
@@ -84,7 +106,20 @@ void Game::Update()
 			m_pointEnded = true;
 			m_resetTimer = 0.0f;
 		}
+
+		if (r.isEnded)
+		{
+			m_pointResult = r;
+			m_pointEnded = true;
+			m_resetTimer = 0.0f;
+
+			/** 勝者に点を加える */
+			int winner = (r.winner == m_player) ? ScoreManager::PLAYER : ScoreManager::ENEMY;
+			m_scoreManager->AddPoint(winner);
+		}
 	}
+
+
 
 	/** 少し待ってから次のサーブへ */
 	if (m_pointEnded)
