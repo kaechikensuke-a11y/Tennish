@@ -237,6 +237,8 @@
     <ClCompile Include="Source\Character\Shot\Shot.cpp" />
     <ClCompile Include="Source\Court\CourtConst.cpp" />
     <ClCompile Include="Source\Judge\PointJudge.cpp" />
+    <ClCompile Include="Source\Score\ScoreManager.cpp" />
+    <ClCompile Include="Source\Score\ScoreUI.cpp" />
     <ClCompile Include="Source\Stage\TennisCourt.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -259,6 +261,8 @@
     <ClInclude Include="Source\Character\Shot\Shot.h" />
     <ClInclude Include="Source\Court\CourtConst.h" />
     <ClInclude Include="Source\Judge\PointJudge.h" />
+    <ClInclude Include="Source\Score\ScoreManager.h" />
+    <ClInclude Include="Source\Score\ScoreUI.h" />
     <ClInclude Include="Source\Stage\TennisCourt.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />

@@ -1,16 +1,18 @@
 ﻿#pragma once
-
+#include <memory>
+#include "Source/Score/ScoreManager.h"
 #include "Level3DRender/LevelRender.h"
 #include "Source/Judge/PointJudge.h"
 class Player;
 class Enemy;
 class Ball;
+class ScoreUI;
 
 class Game : public IGameObject
 {
 public:
 	Game() {}
-	~Game() {}
+	~Game();
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
@@ -33,6 +35,12 @@ private:
 	bool m_playerServing = true;
 	float m_resetTimer = 0.0f;
 	bool m_pointEnded = false;
+
+	/** スコア管理 */
+	std::unique_ptr<ScoreManager>m_scoreManager;
+
+	/** スコア表示 */
+	ScoreUI* m_scoreUI = nullptr;
 
 };
 

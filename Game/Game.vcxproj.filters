@@ -49,6 +49,9 @@
     <Filter Include="Source\Judge">
       <UniqueIdentifier>{c1e7e480-5bad-4127-a3d4-8050dd5e8d5d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Score">
+      <UniqueIdentifier>{1ede6a6e-9a45-4c79-a415-edf0a501f9e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -96,6 +99,12 @@
     <ClCompile Include="Source\Judge\PointJudge.cpp">
       <Filter>Source\Judge</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Score\ScoreManager.cpp">
+      <Filter>Source\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Score\ScoreUI.cpp">
+      <Filter>Source\Score</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -141,6 +150,12 @@
     </ClInclude>
     <ClInclude Include="Source\Judge\PointJudge.h">
       <Filter>Source\Judge</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Score\ScoreManager.h">
+      <Filter>Source\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Score\ScoreUI.h">
+      <Filter>Source\Score</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
