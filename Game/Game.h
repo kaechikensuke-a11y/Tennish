@@ -32,9 +32,11 @@ private:
 	PointResult m_pointResult;
 
 	/** 現在のサーブ権 */
-	bool m_playerServing = true;
 	float m_resetTimer = 0.0f;
 	bool m_pointEnded = false;
+
+	/** 今のポイント数から、サーバー側の立ち位置を返す */
+	Vector3 CalcServerPos(bool isPlayer) const;
 
 	/** スコア管理 */
 	std::unique_ptr<ScoreManager>m_scoreManager;
