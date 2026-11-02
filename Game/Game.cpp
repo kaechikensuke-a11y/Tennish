@@ -7,14 +7,19 @@
 #include "Ball/Ball.h"
 #include "Source/Score/ScoreManager.h"
 #include "Source/Score/ScoreUI.h"
+#include "Source/Court/CourtConst.h"
 
 namespace
 {
 	/** ポイント終了後から次のサーブに移るまでの時間 */
 	constexpr float POINT_RESET_WAIT = 1.5f;
 
-	const Vector3 PLAYER_SERVE_POS(1500.0f, 0.0f, -1000.0f);
-	const Vector3 ENEMY_SERVE_POS(-1500.0f, 0.0f, 9000.0f);
+	/** サーブ位置: コート中心からの横のずれ */
+	constexpr float SERVE_OFFSET_X = 1500.0f;
+
+	/** サーバーが立つZ */
+	constexpr float PLAYER_SERVE_Z = -1000.0f;
+	constexpr float ENEMY_SERVE_Z = 9000.0f;
 }
 
 Game::~Game()
@@ -27,12 +32,11 @@ bool Game::Start()
 	NewGO<TennisCourt>(0, "tenniscourt");
 	NewGO<GameCamera>(0, "gamecamera");
 	m_player = NewGO<Player>(0, "player");
-	m_player->SetPosition(Vector3(PLAYER_SERVE_POS));
 	m_player->SetServeDirZ(1.0f);
 	m_player->SetServer(true);
 	
 	m_enemy = NewGO<Enemy>(0, "enemy");
-	m_enemy->SetPosition(Vector3(ENEMY_SERVE_POS));
+
 	m_enemy->SetServeDirZ(-1.0f);
 	m_enemy->SetServer(false);
 
@@ -49,6 +53,8 @@ bool Game::Start()
 
 	m_scoreUI = NewGO<ScoreUI>(0, "scoreui");
 	m_scoreUI->SetScoreManager(m_scoreManager.get());
+
+	StartNextPoint();
 
 	return true;
 }
@@ -100,12 +106,6 @@ void Game::Update()
 	if (!m_pointEnded)
 	{
 		PointResult r = m_pointJudge.Judge(*m_ball, m_player, m_enemy, 1.0f);
-		if (r.isEnded)
-		{
-			m_pointResult = r;
-			m_pointEnded = true;
-			m_resetTimer = 0.0f;
-		}
 
 		if (r.isEnded)
 		{
@@ -132,10 +132,23 @@ void Game::Update()
 	}
 }
 
+Vector3 Game::CalcServerPos(bool isPlayer) const
+{
+	/** 偶数ポイントは右コートに、奇数ポイントは左コートにうつ */
+	const bool rightCourt = (m_scoreManager->GetPointsPlayedInGame() % 2 == 0);
+
+		float side = rightCourt ? 1.0f : -1.0f;
+		if (!isPlayer) side = -side;
+
+		const float z = isPlayer ? PLAYER_SERVE_Z : ENEMY_SERVE_Z;
+		return Vector3(CourtConst::COURT_CENTER_X + side * SERVE_OFFSET_X, 0.0f, z);
+}
+
 void Game::StartNextPoint()
 {
 	/** サーブ権を交代 */
-	m_playerServing = !m_playerServing;
+	/** 今のサーバーを ScoreManager から取得(ゲームが変わっていれば交代済み) */
+	const bool playerServes = (m_scoreManager->GetServer() == ScoreManager::PLAYER);
 
 	/** ボールをリセット */
 	m_ball->ResetBounceCount();
@@ -143,14 +156,20 @@ void Game::StartNextPoint()
 	m_ball->SetLastHitPlayer(nullptr);
 	m_pointResult = PointResult();
 
+	/** サーバーとレシーバーの位置 */
+	Vector3 playerPos = CalcServerPos(true);
+	Vector3 enemyPos = CalcServerPos(false);
+
+	
+
 	/** 位置とサーブ状態を戻す */
-	m_player->ResetForServe(m_playerServing, Vector3(1500.0f, 0.0f, -1000.0f));
-	m_enemy->ResetForServe(!m_playerServing, Vector3(-1500.0f, 0.0f, 9000.0f));
+	m_player->ResetForServe(playerServes,playerPos);
+	m_enemy->ResetForServe(!playerServes,enemyPos);
 
 	m_pointEnded = false;
 }
 
 void Game::Render(RenderContext& rc)
 {
-	m_debugFont.Draw(rc);
+	//m_debugFont.Draw(rc);
 }
