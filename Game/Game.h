@@ -33,7 +33,12 @@ private:
 
 	/** 現在のサーブ権 */
 	float m_resetTimer = 0.0f;
-	bool m_pointEnded = false;
+	bool  m_pointEnded = false;
+
+	/** サーブミスのバウンド回数 */
+	int  m_serveCount = 1;
+	/** サーブミスの打ち直しかどうか */
+	bool m_isRetry    = false;
 
 	/** 今のポイント数から、サーバー側の立ち位置を返す */
 	Vector3 CalcServerPos(bool isPlayer) const;

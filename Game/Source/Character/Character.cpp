@@ -191,6 +191,11 @@ bool Character::IsBallComing() const
 	return m_ball->GetVelocity().z * m_serveDirZ < 0.0f;
 }
 
+bool Character::IsTossMissed() const
+{
+	return m_serveState == ServeState::en_Tossed && m_ball != nullptr && m_ball->GetBounceCount() >= 1;
+}
+
 void Character::UpdateRally(const Intent& intent)
 {
 	if (m_ball == nullptr) return;
