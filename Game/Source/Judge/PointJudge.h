@@ -10,6 +10,8 @@ enum class PointReason
 	en_Net,		  /**   ネットにかかった   */
 	en_OwnCourt,  /** 自分のコートに落ちた */
 	en_TwoBounce, /**  相手が返せなかった  */
+	en_Fault,
+	en_DoubleFault
 };
 
 /** 判定結果 */

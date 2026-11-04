@@ -101,6 +101,37 @@ void Game::Update()
 		winnerName, reasonName, scoreText);
 	m_debugFont.SetText(text);
 
+	/** トスを上げたのに打てずに落ちた(サーブミス判定) */
+	if (!m_pointEnded)
+	{
+		const bool playerServes = (m_scoreManager->GetServer() == ScoreManager::PLAYER);
+		Character* server = playerServes ? static_cast<Character*>(m_player) : static_cast<Character*>(m_enemy);
+
+		if (server->IsTossMissed())
+		{
+			m_pointEnded = true;
+			m_resetTimer = 0.0f;
+
+			if (m_serveCount == 1)
+			{
+				/** 一度目は打ちなおすことが出来るようにする */
+				m_serveCount = 2;
+				m_isRetry = true;
+				m_pointResult.reason = PointReason::en_Fault;
+			}
+			else
+			{
+				/** 2回目 */
+				m_pointResult.reason = PointReason::en_DoubleFault;
+				m_pointResult.winner = playerServes ? static_cast<Character*>(m_enemy) : static_cast<Character*>(m_player);
+				
+				int winner = playerServes ? ScoreManager::ENEMY : ScoreManager::PLAYER;
+				m_scoreManager->AddPoint(winner);
+			
+			}
+		}
+	}
+
 
 	/** ポイント終了を検知 */
 	if (!m_pointEnded)
@@ -160,7 +191,9 @@ void Game::StartNextPoint()
 	Vector3 playerPos = CalcServerPos(true);
 	Vector3 enemyPos = CalcServerPos(false);
 
-	
+	/** 打ち直しでなければ、1回目のサーブに戻す */
+	if (!m_isRetry) m_serveCount = 1;
+	m_isRetry = false;
 
 	/** 位置とサーブ状態を戻す */
 	m_player->ResetForServe(playerServes,playerPos);

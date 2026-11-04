@@ -46,6 +46,9 @@ public:
 
 	const Vector3& GetPosition() const { return m_position; }
 
+	/** トスした後に打てずにボールが落ちたかどうか */
+	bool IsTossMissed() const;
+
 /** 自分と子クラスのみ使える */
 protected:
 
