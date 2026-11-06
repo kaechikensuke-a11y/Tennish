@@ -24,6 +24,7 @@ namespace
 
 Game::~Game()
 {
+	m_matchEnd.Finish();
 	DeleteGO(m_scoreUI);
 }
 
@@ -48,7 +49,7 @@ bool Game::Start()
 
 	/** スコア管理と表示 */
 	MatchSettings ms;
-	ms.gamesToWin = 3;
+	ms.gamesToWin = 1;
 	m_scoreManager = std::make_unique<ScoreManager>(ms);
 
 	m_scoreUI = NewGO<ScoreUI>(0, "scoreui");
@@ -101,6 +102,13 @@ void Game::Update()
 		winnerName, reasonName, scoreText);
 	m_debugFont.SetText(text);
 
+	/** 試合終了の演出中は、ポイント処理を止める */
+	if (m_state == GameState::en_MatchEnd)
+	{
+		m_matchEnd.Update();
+		return;
+	}
+
 	/** トスを上げたのに打てずに落ちた(サーブミス判定) */
 	if (!m_pointEnded)
 	{
@@ -150,7 +158,13 @@ void Game::Update()
 		}
 	}
 
-
+	/** 試合が決まったら、次のポイントへ進まず演出へ */
+	if (m_scoreManager->IsMatchOver())
+	{
+		m_state = GameState::en_MatchEnd;
+		m_matchEnd.Start(m_player, m_enemy);
+		return;
+	}
 
 	/** 少し待ってから次のサーブへ */
 	if (m_pointEnded)
