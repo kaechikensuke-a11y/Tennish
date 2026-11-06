@@ -52,6 +52,9 @@
     <Filter Include="Source\Score">
       <UniqueIdentifier>{1ede6a6e-9a45-4c79-a415-edf0a501f9e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene\Result">
+      <UniqueIdentifier>{41fdee15-9cd6-4016-94cd-41f25641cdc0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -105,6 +108,12 @@
     <ClCompile Include="Source\Score\ScoreUI.cpp">
       <Filter>Source\Score</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\Result\MatchEndDirector.cpp">
+      <Filter>Scene\Result</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Result\MatchResultUI.cpp">
+      <Filter>Scene\Result</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -156,6 +165,12 @@
     </ClInclude>
     <ClInclude Include="Source\Score\ScoreUI.h">
       <Filter>Source\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Result\MatchResultUI.h">
+      <Filter>Scene\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Result\MatchEndDirector.h">
+      <Filter>Scene\Result</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

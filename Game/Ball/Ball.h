@@ -47,7 +47,7 @@ public:
 	const Character* GetLastHitPlayer() const { return m_lastHitPlayer; }
 
 	/** 1バウンド目の記録 */
-	bool HasBounced() const { return m_isHasBounced; }
+	bool IsHasBounced() const { return m_isHasBounced; }
 	const Vector3& GetFirstBouncePos() const { return m_firstBouncePos; }
 
 	/** 今の球がサーブかどうか */

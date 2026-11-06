@@ -55,6 +55,10 @@ bool Character::Start()
 
 void Character::Update()
 {
+	if (m_ball == nullptr)
+	{
+		m_ball = FindGO<Ball>("ball");
+	}
 	/** どう動きたいかを子クラスから受け取る */
 	Intent intent = DecideIntent();
 
@@ -64,6 +68,12 @@ void Character::Update()
 	/** 移動できる状態かどうか */
 	bool isMove = (m_serveState == ServeState::en_Waiting) ||
 		(m_serveState == ServeState::en_Done);
+
+	/** サーブがまだワンバウンドしていない間は動けない */
+	if (IsServeInFlight())
+	{
+		isMove = false;
+	}
 
 	/** 移動できる状態なら */
 	if (isMove)
@@ -194,6 +204,19 @@ bool Character::IsBallComing() const
 bool Character::IsTossMissed() const
 {
 	return m_serveState == ServeState::en_Tossed && m_ball != nullptr && m_ball->GetBounceCount() >= 1;
+}
+
+bool Character::IsServeInFlight() const
+{
+	/** 返球前のレシーバー(サーバーではない側)だけが対象 */
+	if (m_serveState != ServeState::en_Waiting) return false;
+
+	/** ボールがまだ見つかっていない間(最初の1フレーム)も動けない */
+	if (m_ball == nullptr) return true;
+
+	/** サーブが打たれて、ワンバウンドしたら解除 */
+	const bool serveBounced = m_ball->IsServe() && m_ball->IsHasBounced();
+	return !serveBounced;
 }
 
 void Character::UpdateRally(const Intent& intent)
