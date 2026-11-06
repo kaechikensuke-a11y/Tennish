@@ -3,6 +3,7 @@
 #include "Source/Score/ScoreManager.h"
 #include "Level3DRender/LevelRender.h"
 #include "Source/Judge/PointJudge.h"
+#include "Scene/Result/MatchEndDirector.h"
 class Player;
 class Enemy;
 class Ball;
@@ -20,6 +21,14 @@ public:
 	FontRender m_debugFont;
 
 private:
+	enum class GameState
+	{
+		en_Playing, /** 試合中 */
+		en_MatchEnd,/** 試合終了の演出中 */
+	};
+
+	GameState m_state = GameState::en_Playing;
+	MatchEndDirector m_matchEnd;
 
 	void StartNextPoint();
 

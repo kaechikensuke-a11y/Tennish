@@ -60,7 +60,11 @@ void Character::Update()
 		m_ball = FindGO<Ball>("ball");
 	}
 	/** どう動きたいかを子クラスから受け取る */
-	Intent intent = DecideIntent();
+	Intent intent;
+	if (m_controlEnabled)
+	{
+		intent = DecideIntent();
+	}
 
 	/** 経過時間 */
 	float dt = g_gameTime->GetFrameDeltaTime();
@@ -221,6 +225,17 @@ bool Character::IsServeInFlight() const
 
 void Character::UpdateRally(const Intent& intent)
 {
+	/*
+	 * ラリーの判定フロー
+	 * 打てる条件を順番にチェックし、1つでも満たさなかった場合returnするようにする
+	 * 1.状態がen_Waitingかen_Done
+	 * 2.スイング入力あり
+	 * 3.ボールがこちらに向かっている(IsBallComing:速度Zと打つ方向が逆)
+	 * 4.バウンド二回未満
+	 * 5.水平距離が600.0f(HIT_RANGE)以内
+	 * 6.高さが1500.0f(HIT_MAX_HEIGHT)以下
+	 */
+
 	if (m_ball == nullptr) return;
 
 	/** 打てるのは、レシーブ待ち(最初の返球)かラリー中 */

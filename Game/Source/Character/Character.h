@@ -44,6 +44,9 @@ public:
 		m_tossTimer = 0.0f;/** 前のトスが上がる時間を初期化 */
 	}
 
+	/** 操作を止める/再開する */
+	void SetControlEnabled(bool enabled) { m_controlEnabled = enabled; }
+
 	const Vector3& GetPosition() const { return m_position; }
 
 	/** トスした後に打てずにボールが落ちたかどうか */
@@ -99,6 +102,8 @@ protected:
 
 	/** ボールが自分のコートに向かって飛んできているか */
 	bool IsBallComing() const;
+
+	bool m_controlEnabled = true;
 
 	/** モデルのファイルパス(子クラスで差し替える) */
 	const char* m_modelPath = nullptr;

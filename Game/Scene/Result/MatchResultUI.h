@@ -23,6 +23,7 @@ private:
 	};
 
 	SpriteRender m_endImage;
+	SpriteRender m_endBackImage;
 	Phase m_phase = Phase::en_Hidden;
 	float m_timer = 0.0f;
 	float m_scale = 0.0f;
