@@ -55,6 +55,9 @@
     <Filter Include="Scene\Result">
       <UniqueIdentifier>{41fdee15-9cd6-4016-94cd-41f25641cdc0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene\Result\Fade">
+      <UniqueIdentifier>{35b04560-e3e7-4f23-9065-02ad579a0666}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -114,6 +117,9 @@
     <ClCompile Include="Scene\Result\MatchResultUI.cpp">
       <Filter>Scene\Result</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\Result\Fade\FadeScreen.cpp">
+      <Filter>Scene\Result\Fade</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -171,6 +177,9 @@
     </ClInclude>
     <ClInclude Include="Scene\Result\MatchEndDirector.h">
       <Filter>Scene\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Result\Fade\FadeScreen.h">
+      <Filter>Scene\Result\Fade</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -227,6 +227,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera\GameCamera.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scene\Result\Fade\FadeScreen.cpp" />
     <ClCompile Include="Scene\Result\MatchEndDirector.cpp" />
     <ClCompile Include="Scene\Result\MatchResultUI.cpp" />
     <ClCompile Include="Scene\Title\Title.cpp" />
@@ -253,6 +254,7 @@
     <ClInclude Include="Ball\Ball.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera\GameCamera.h" />
+    <ClInclude Include="Scene\Result\Fade\FadeScreen.h" />
     <ClInclude Include="Scene\Result\MatchEndDirector.h" />
     <ClInclude Include="Scene\Result\MatchResultUI.h" />
     <ClInclude Include="Scene\Title\Title.h" />
