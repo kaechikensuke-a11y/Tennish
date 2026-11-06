@@ -96,7 +96,7 @@ void Game::Update()
 		L"Player X:%.0f Z:%.0f\nBall X:%.0f Y:%.0f Z:%.0f\nLastHitter:%s Serve:%d\nBounce:%d X:%.0f Z:%.0f\nNetHit:%d Crossed:%d\nWinner:%s Reason:%s\n%s",
 		pp.x, pp.z, bp.x, bp.y, bp.z,
 		who, m_ball->IsServe() ? 1 : 0,
-		m_ball->HasBounced() ? 1 : 0, fb.x, fb.z,
+		m_ball->IsHasBounced() ? 1 : 0, fb.x, fb.z,
 		m_ball->IsHitNet() ? 1 : 0, m_ball->HasCrossedNet() ? 1 : 0,
 		winnerName, reasonName, scoreText);
 	m_debugFont.SetText(text);

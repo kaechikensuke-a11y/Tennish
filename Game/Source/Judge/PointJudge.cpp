@@ -38,7 +38,7 @@ PointResult PointJudge::Judge(const Ball& ball, Character* player, Character* en
 	}
 
 	/** まだラリー中だったら何も起きない */
-	if (!ball.HasBounced()) return result;
+	if (!ball.IsHasBounced()) return result;
 
 	const Vector3& fb = ball.GetFirstBouncePos();
 

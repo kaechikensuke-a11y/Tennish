@@ -49,6 +49,9 @@ public:
 	/** トスした後に打てずにボールが落ちたかどうか */
 	bool IsTossMissed() const;
 
+	/** サーブがバウンドしたかどうか */
+	bool IsServeInFlight() const;
+
 /** 自分と子クラスのみ使える */
 protected:
 
