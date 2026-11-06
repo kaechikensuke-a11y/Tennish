@@ -49,7 +49,7 @@ bool Game::Start()
 
 	/** スコア管理と表示 */
 	MatchSettings ms;
-	ms.gamesToWin = 1;
+	ms.gamesToWin = 2;
 	m_scoreManager = std::make_unique<ScoreManager>(ms);
 
 	m_scoreUI = NewGO<ScoreUI>(0, "scoreui");
