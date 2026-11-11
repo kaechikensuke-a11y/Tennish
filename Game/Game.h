@@ -8,6 +8,7 @@ class Player;
 class Enemy;
 class Ball;
 class ScoreUI;
+class GameCamera;
 
 class Game : public IGameObject
 {
@@ -36,6 +37,8 @@ private:
 	Player* m_player = nullptr;
 	Enemy* m_enemy = nullptr;
 	Ball* m_ball = nullptr;
+
+	GameCamera* m_gameCamera = nullptr;
 
 	PointJudge  m_pointJudge;
 	PointResult m_pointResult;

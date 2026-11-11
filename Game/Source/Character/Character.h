@@ -47,6 +47,8 @@ public:
 	/** 操作を止める/再開する */
 	void SetControlEnabled(bool enabled) { m_controlEnabled = enabled; }
 
+	void SetRotation(const Quaternion& rot) { m_rotation = rot; }
+
 	const Vector3& GetPosition() const { return m_position; }
 
 	/** トスした後に打てずにボールが落ちたかどうか */

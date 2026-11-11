@@ -103,5 +103,6 @@ Vector3 Ball::PredictLanding() const
 
 void Ball::Render(RenderContext& rc)
 {
+	if (!m_isVisible) return;
 	m_ballRender.Draw(rc);
 }

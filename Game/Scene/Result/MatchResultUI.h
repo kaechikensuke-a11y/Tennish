@@ -9,6 +9,9 @@ public:
 	/** 終了画像の出現を始める */
 	void ShowEndImage();
 
+	/** 勝利演出UI */
+	void ShowResult(int playerGames, int enemyGames);
+
 	/** 終了画像が出て、消えるところまで終わったか */
 	bool IsEndImageFinished() const { return m_phase == Phase::en_Done; }
 
@@ -24,8 +27,15 @@ private:
 
 	SpriteRender m_endImage;
 	SpriteRender m_endBackImage;
+	SpriteRender m_band;
+	SpriteRender m_winText;
+	SpriteRender m_flow;
 	Phase m_phase = Phase::en_Hidden;
 	float m_timer = 0.0f;
 	float m_scale = 0.0f;
+	float m_resultTimer = 0.0f;
+	float m_scoreScale = 0.0f;
+
+	bool m_resultActive = false;
 };
 
