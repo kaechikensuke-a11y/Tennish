@@ -31,7 +31,7 @@ Game::~Game()
 bool Game::Start()
 {
 	NewGO<TennisCourt>(0, "tenniscourt");
-	NewGO<GameCamera>(0, "gamecamera");
+	m_gameCamera = NewGO<GameCamera>(0, "gamecamera");
 	m_player = NewGO<Player>(0, "player");
 	m_player->SetServeDirZ(1.0f);
 	m_player->SetServer(true);
@@ -49,7 +49,7 @@ bool Game::Start()
 
 	/** スコア管理と表示 */
 	MatchSettings ms;
-	ms.gamesToWin = 2;
+	ms.gamesToWin = 1;
 	m_scoreManager = std::make_unique<ScoreManager>(ms);
 
 	m_scoreUI = NewGO<ScoreUI>(0, "scoreui");
@@ -162,7 +162,7 @@ void Game::Update()
 	if (m_scoreManager->IsMatchOver())
 	{
 		m_state = GameState::en_MatchEnd;
-		m_matchEnd.Start(m_player, m_enemy);
+		m_matchEnd.Start(*m_scoreManager,m_player, m_enemy,m_ball,m_gameCamera);
 		return;
 	}
 
@@ -218,5 +218,5 @@ void Game::StartNextPoint()
 
 void Game::Render(RenderContext& rc)
 {
-	//m_debugFont.Draw(rc);
+	m_debugFont.Draw(rc);
 }

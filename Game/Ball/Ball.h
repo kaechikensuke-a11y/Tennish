@@ -60,6 +60,9 @@ public:
 	/** ネットが越えたかどうか */
 	bool HasCrossedNet() const { return m_isCrossedNet; }
 
+	/** ボールの表示非表示 */
+	void SetVisible(bool visible) { m_isVisible = visible; }
+
 private:
 	/** 最後に打った人 */
 	const Character* m_lastHitPlayer = nullptr;
@@ -90,6 +93,9 @@ private:
 
 	/** ボールがネットに越えたかどうか */
 	bool m_isCrossedNet = false;
+
+	/** ボールを表示しているかどうか */
+	bool m_isVisible = true;
 
 	float m_curveAccelX = 0.0f;
 	float m_gravityScale = 1.0f;
