@@ -1,7 +1,10 @@
 #pragma once
+class ResultMenu;
+
 class MatchResultUI : public IGameObject
 {
 public:
+	~MatchResultUI();
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
@@ -15,7 +18,11 @@ public:
 	/** 終了画像が出て、消えるところまで終わったか */
 	bool IsEndImageFinished() const { return m_phase == Phase::en_Done; }
 
+	int GetMenuDecided() const;
+
 private:
+	void UpdatePrompt();
+
 	enum class Phase
 	{
 		en_Hidden,    /** まだ描画していない */
@@ -25,6 +32,7 @@ private:
 		en_Done		  /** 終わり */
 	};
 
+	SpriteRender m_aPrompt;
 	SpriteRender m_endImage;
 	SpriteRender m_endBackImage;
 	SpriteRender m_band;
@@ -35,7 +43,11 @@ private:
 	float m_scale = 0.0f;
 	float m_resultTimer = 0.0f;
 	float m_scoreScale = 0.0f;
+	float m_promptTimer = 0.0f;
 
+	ResultMenu* m_menu = nullptr;
+
+	bool m_promptActive = false;
 	bool m_resultActive = false;
 };
 

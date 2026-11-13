@@ -230,6 +230,7 @@
     <ClCompile Include="Scene\Result\Fade\FadeScreen.cpp" />
     <ClCompile Include="Scene\Result\MatchEndDirector.cpp" />
     <ClCompile Include="Scene\Result\MatchResultUI.cpp" />
+    <ClCompile Include="Scene\Result\ResultMenu.cpp" />
     <ClCompile Include="Scene\Title\Title.cpp" />
     <ClCompile Include="SoundManager\BGM\BGM.cpp" />
     <ClCompile Include="SoundManager\SE\SE.cpp" />
@@ -257,6 +258,7 @@
     <ClInclude Include="Scene\Result\Fade\FadeScreen.h" />
     <ClInclude Include="Scene\Result\MatchEndDirector.h" />
     <ClInclude Include="Scene\Result\MatchResultUI.h" />
+    <ClInclude Include="Scene\Result\ResultMenu.h" />
     <ClInclude Include="Scene\Title\Title.h" />
     <ClInclude Include="SoundManager\BGM\BGM.h" />
     <ClInclude Include="SoundManager\SE\SE.h" />

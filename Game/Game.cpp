@@ -8,6 +8,7 @@
 #include "Source/Score/ScoreManager.h"
 #include "Source/Score/ScoreUI.h"
 #include "Source/Court/CourtConst.h"
+#include "Scene/Title/Title.h"
 
 namespace
 {
@@ -26,11 +27,17 @@ Game::~Game()
 {
 	m_matchEnd.Finish();
 	DeleteGO(m_scoreUI);
+
+	DeleteGO(m_ball);
+	DeleteGO(m_player);
+	DeleteGO(m_enemy);
+	DeleteGO(m_gameCamera);
+	DeleteGO(m_court);
 }
 
 bool Game::Start()
 {
-	NewGO<TennisCourt>(0, "tenniscourt");
+	m_court = NewGO<TennisCourt>(0, "tenniscourt");
 	m_gameCamera = NewGO<GameCamera>(0, "gamecamera");
 	m_player = NewGO<Player>(0, "player");
 	m_player->SetServeDirZ(1.0f);
@@ -106,6 +113,21 @@ void Game::Update()
 	if (m_state == GameState::en_MatchEnd)
 	{
 		m_matchEnd.Update();
+
+		if (m_matchEnd.IsExitReady())
+		{
+			if (m_matchEnd.GetDecided() == 0)
+			{
+				/** リトライ */
+				NewGO<Game>(0, "game");
+			}
+			else
+			{
+				/** タイトルへ */
+				NewGO<Title>(0, "game");
+			}
+			DeleteGO(this);
+		}
 		return;
 	}
 

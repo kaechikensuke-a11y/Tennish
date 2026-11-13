@@ -88,7 +88,24 @@ void MatchEndDirector::Update()
 		break;
 
 	case Phase::en_Result:
-		
+		/** メニューで決定されたら、フェードアウトを始める */
+		if (m_resultUI != nullptr)
+		{
+			const int d = m_resultUI->GetMenuDecided();
+			if (d != -1)
+			{
+				m_decided = d;
+				m_fade->StartFadeOut(FADE_OUT_TIME);
+				m_phase = Phase::en_Exit;
+			}
+		}
+		break;
+
+	case Phase::en_Exit:
+		if (m_fade->IsFinished())
+		{
+			m_exitReady = true;
+		}
 		break;
 	}
 }
@@ -117,7 +134,7 @@ void MatchEndDirector::SwitchScene()
 	/** ボールを消す */
 	m_ball->SetVisible(false);
 
-	/** プレイヤーの配置と向きえお変える */
+	/** プレイヤーの配置と向きを変える */
 	winner->SetPosition(WINNER_POS);
 	loser->SetPosition(LOSER_POS);
 

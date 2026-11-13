@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <cmath>
 #include "MatchResultUI.h"
+#include "ResultMenu.h"
 
 namespace
 {
@@ -10,6 +11,9 @@ namespace
 	const char* BANDBACK_PATH = "Assets/Scene/Result/WinBackAnimation.dds";
 	const char* BAND_PATH = "Assets/Scene/Result/WinBackGround.dds";
 	const char* WIN_PATH  = "Assets/Scene/Result/WinText.dds";
+
+	/** Aボタン */
+	const char* A_BUTTON_PATH = "Assets/Scene/Result/AbuttonUI.dds";
 
 	constexpr float END_IMAGE_W = 800.0f;
 	constexpr float END_IMAGE_H = 250.0f;
@@ -25,6 +29,9 @@ namespace
 
 	constexpr float BANDBACK_W = 500.0f;
 	constexpr float BANDBACK_H = 160.0f;
+
+	constexpr float A_BUTTON_SIZE = 120.0f;
+	const Vector3 A_BUTTON_POS(800.0f, -420.0f, 0.0f);
 
 	/** 最終位置 */
 	const Vector3 BAND_END_POS(-200.0f, 380.0f, 0.0f);
@@ -49,6 +56,12 @@ namespace
 	constexpr float FLOW_TIME = 3.5f;     /** 1回の移動にかける時間 */     
 	constexpr float FLOW_FADE_IN  = 0.6f; /** フェードインにかける時間 */
 	constexpr float FLOW_FADE_OUT = 0.3f; /** フェードアウトにかける時間 */
+
+	constexpr float PROMPT_DELAY  = 1.5f; /** リザルトが出てからAを出すまで */
+	constexpr float PROMPT_FADE   = 0.5f; /** フェードイン時間 */
+	constexpr float PROMPT_PERIOD = 2.0f; /** 点滅周期 */
+	constexpr float PROMPT_MIN_A = 0.0f; /** 一番薄い時の透明度 */
+	constexpr float PI = 3.14f;
 
 	/** t(0〜1)から拡大率を返す: 0倍 → 1.3倍に膨らむ → 1.0倍に戻る */
 	float CalcPopScale(float t)
@@ -107,6 +120,15 @@ namespace
 	
 }
 
+MatchResultUI::~MatchResultUI()
+{
+	if (m_menu != nullptr)
+	{
+		DeleteGO(m_menu);
+		m_menu = nullptr;
+	}
+}
+
 bool MatchResultUI::Start()
 {
 	m_endImage.Init(END_IMAGE_PATH, END_IMAGE_W, END_IMAGE_H);
@@ -130,6 +152,11 @@ bool MatchResultUI::Start()
 	m_flow.SetPosition(BANDBACK_START_POS);
 	m_flow.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, 0.0f));
 	m_flow.Update();
+
+	m_aPrompt.Init(A_BUTTON_PATH, A_BUTTON_SIZE, A_BUTTON_SIZE);
+	m_aPrompt.SetPosition(A_BUTTON_POS);
+	m_aPrompt.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, 0.0f));
+	m_aPrompt.Update();
 
 	return true;
 }
@@ -168,6 +195,7 @@ void MatchResultUI::Update()
 		m_flow.SetPosition(Lerp3(BANDBACK_START_POS,FLOW_END_POS , ts));
 		m_flow.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, CalcFlowAlpha(flowTime)));
 		m_flow.Update();
+		UpdatePrompt();
 		
 	}
 	/*
@@ -222,6 +250,51 @@ void MatchResultUI::Update()
 	m_endBackImage.Update();
 }
 
+int MatchResultUI::GetMenuDecided() const
+{
+	return (m_menu != nullptr) ? m_menu->GetDecided() : -1;
+}
+
+void MatchResultUI::UpdatePrompt()
+{
+	if (!m_promptActive)
+	{
+		if (m_resultTimer >= PROMPT_DELAY)
+		{
+			m_promptActive = true;
+			m_promptTimer = 0.0f;
+		}
+		return;
+	}
+
+	/** メニューを開いている時 */
+	if (m_menu != nullptr)
+	{
+		if (m_menu->IsClosed())
+		{
+			DeleteGO(m_menu);
+			m_menu = nullptr;
+			m_promptTimer = 0.0f;
+		}
+		return;
+	}
+
+	/** Aボタンの画像を点滅させる */
+	m_promptTimer += g_gameTime->GetFrameDeltaTime();
+	float fadeIn = std::fmin(m_promptTimer / PROMPT_FADE, 1.0f);
+	float wave = 0.5f - 0.5f * std::cos(2.0f * PI * m_promptTimer / PROMPT_PERIOD);
+	float alpha = (PROMPT_MIN_A + (1.0f - PROMPT_MIN_A) * wave) * fadeIn;
+
+	m_aPrompt.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, alpha));
+	m_aPrompt.Update();
+
+	/** Aでメニューを開く */
+	if (g_pad[0]->IsTrigger(enButtonA))
+	{
+		m_menu = NewGO<ResultMenu>(6, "resultmenu");
+	}
+}
+
 void MatchResultUI::Render(RenderContext& rc)
 {
 	if (m_resultActive)
@@ -229,6 +302,7 @@ void MatchResultUI::Render(RenderContext& rc)
 		m_band.Draw(rc);
 		m_flow.Draw(rc);
 		m_winText.Draw(rc);
+		if (m_promptActive && m_menu == nullptr) m_aPrompt.Draw(rc);
 	}
 
 	if (m_phase == Phase::en_Hidden || m_phase == Phase::en_Done) return;
