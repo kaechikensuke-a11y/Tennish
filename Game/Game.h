@@ -9,6 +9,7 @@ class Enemy;
 class Ball;
 class ScoreUI;
 class GameCamera;
+class TennisCourt;
 
 class Game : public IGameObject
 {
@@ -37,7 +38,7 @@ private:
 	Player* m_player = nullptr;
 	Enemy* m_enemy = nullptr;
 	Ball* m_ball = nullptr;
-
+	TennisCourt* m_court = nullptr;
 	GameCamera* m_gameCamera = nullptr;
 
 	PointJudge  m_pointJudge;

@@ -120,6 +120,9 @@
     <ClCompile Include="Scene\Result\Fade\FadeScreen.cpp">
       <Filter>Scene\Result\Fade</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\Result\ResultMenu.cpp">
+      <Filter>Scene\Result</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -180,6 +183,9 @@
     </ClInclude>
     <ClInclude Include="Scene\Result\Fade\FadeScreen.h">
       <Filter>Scene\Result\Fade</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Result\ResultMenu.h">
+      <Filter>Scene\Result</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

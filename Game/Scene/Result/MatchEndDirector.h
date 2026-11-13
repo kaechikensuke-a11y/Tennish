@@ -19,6 +19,12 @@ public:
 
 	void Finish();
 
+	/** フェードが終わって、シーンを切り替えていいかどうか */
+	bool IsExitReady() const { return m_exitReady; }
+
+	/** メニューで決まった項目 */
+	int GetDecided() const { return m_decided; }
+
 private:
 	/** ホワイトアウトの切り替え */
 	void SwitchScene();
@@ -29,9 +35,14 @@ private:
 		en_FadeOut,
 		en_FadeIn,
 		en_Result,
+		en_Exit,
 	};
 
+	int m_decided = -1;
+
 	float m_timer = 0.0f;
+
+	bool m_exitReady = false;
 
 	Phase m_phase = Phase::en_EndImage;
 	MatchResultUI* m_resultUI = nullptr;
