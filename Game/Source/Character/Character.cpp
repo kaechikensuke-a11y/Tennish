@@ -7,7 +7,7 @@
 
 namespace
 {
-	const char* BLUE_PLAYER_MODEL_PATH = "Assets/model/Player/TennisPlayerBlue.tkm";
+	const char* BLUE_PLAYER_MODEL_PATH = "Assets/model/Player/Character.tkm";
 	constexpr float PLAYER_POSITION_Y = -900.0f;
 
 	constexpr float TOSS_SPEED        =  1100.0f; /** トスで上に投げる速さ */

@@ -240,5 +240,5 @@ void Game::StartNextPoint()
 
 void Game::Render(RenderContext& rc)
 {
-	m_debugFont.Draw(rc);
+	//m_debugFont.Draw(rc);
 }
