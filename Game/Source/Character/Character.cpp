@@ -7,7 +7,7 @@
 
 namespace
 {
-	const char* BLUE_PLAYER_MODEL_PATH = "Assets/model/Player/Character.tkm";
+	const char* BLUE_PLAYER_MODEL_PATH = "Assets/model/Player/TennisPlayerBlue.tkm";
 	constexpr float PLAYER_POSITION_Y = -900.0f;
 
 	constexpr float TOSS_SPEED        =  1100.0f; /** トスで上に投げる速さ */
@@ -43,12 +43,17 @@ bool Character::Start()
 	/** 子クラスが指定していればそれを使い、なければ既定のモデルを使う */
 	const char* path = (m_modelPath != nullptr) ? m_modelPath : BLUE_PLAYER_MODEL_PATH;
 
+	m_idle.Load("Assets/AnimData/IdleAnimation.tka");
+	m_idle.SetLoopFlag(true);
+
 	/** モデルの読み込み */
-	m_modelRender.Init(path);
+	m_modelRender.Init(path, &m_idle, 1, enModelUpAxisZ);
 
 	/** 初期位置をモデルに反映 */
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
+
+	m_modelRender.PlayAnimation(0);
 
 	return true;
 }

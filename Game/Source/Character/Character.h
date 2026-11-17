@@ -116,5 +116,7 @@ protected:
 	/** キャラクターの向き */
 	Quaternion m_rotation;
 
+	AnimationClip m_idle;
+
 };
 
