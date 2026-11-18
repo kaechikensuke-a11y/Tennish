@@ -43,18 +43,16 @@ bool Character::Start()
 	/** 子クラスが指定していればそれを使い、なければ既定のモデルを使う */
 	const char* path = (m_modelPath != nullptr) ? m_modelPath : BLUE_PLAYER_MODEL_PATH;
 
-	m_idle.Load("Assets/AnimData/IdleAnimation.tka");
-	m_idle.SetLoopFlag(true);
+	/** 立ちアニメーションの再生 */
+	m_animator.Load();
+	m_modelRender.Init(path, m_animator.GetAnimationClips(), m_animator.GetAnimationClipNum(), enModelUpAxisZ);
+	m_animator.Bind(&m_modelRender);
 
-	/** モデルの読み込み */
-	m_modelRender.Init(path, &m_idle, 1, enModelUpAxisZ);
-
-	/** 初期位置をモデルに反映 */
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 
-	m_modelRender.PlayAnimation(0);
-
+	/** 立ちアニメーションをループさせる */
+	m_animator.PlayLoop(CharacterAnimator::en_Idle);
 	return true;
 }
 
@@ -116,6 +114,9 @@ void Character::Update()
 	/** ラリー(打ち返し) */
 	UpdateRally(intent);
 
+	/** アニメーション */
+	UpdateAnimation(intent);
+
 	/** 動かした座標をモデルに反映する */
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.SetRotation(m_rotation);
@@ -149,6 +150,7 @@ void Character::UpdateServe(const Intent& intent)
 
 			m_tossTimer = 0.0f; /** 経過時間を0から数える */
 			m_serveState = ServeState::en_Tossed;
+			m_animator.PlayOneShot(CharacterAnimator::en_ServeToss);
 		}
 		break;
 
@@ -194,6 +196,14 @@ void Character::UpdateServe(const Intent& intent)
 	case ServeState::en_Done:
 		break;
 	}
+}
+
+void Character::UpdateAnimation(const Intent& intent)
+{
+	/** トス中は終わるまで待つ */
+	if (m_animator.IsOneShotPlaying()) return;
+
+	m_animator.PlayLoop(CharacterAnimator::en_Idle);
 }
 
 float Character::GetTossApexTime() const

@@ -1,5 +1,6 @@
 #pragma once
 #include "Source/Character/Shot/Shot.h"
+#include "Source/Character/CharacterAnimator.h"
 class Ball;
 /** 誰が操作しても同じ処理をまとめる */
 class Character : public IGameObject
@@ -42,6 +43,7 @@ public:
 		m_position = pos; /** 立ち位置を戻す */
 		m_serveState = isServer ? ServeState::en_Ready : ServeState::en_Waiting;/** サーブ権に応じた状態に */
 		m_tossTimer = 0.0f;/** 前のトスが上がる時間を初期化 */
+		m_animator.Reset();
 	}
 
 	/** 操作を止める/再開する */
@@ -86,6 +88,11 @@ protected:
 	/** ラリー中の打ち返し処理 */
 	void UpdateRally(const Intent& intent);
 
+	/** 状態に合わせてアニメーションを選ぶ */
+	void UpdateAnimation(const Intent& intent);
+
+	CharacterAnimator m_animator;
+
 	ServeState m_serveState = ServeState::en_Ready; /** 今のサーブ状態 */
 	Ball* m_ball = nullptr; /** ボールへのポインタ */
 	float m_serveDirZ = 1.0f; /** コートの方向(1なら奥に、-1なら手前) */
@@ -115,8 +122,6 @@ protected:
 	Vector3 m_position;
 	/** キャラクターの向き */
 	Quaternion m_rotation;
-
-	AnimationClip m_idle;
 
 };
 

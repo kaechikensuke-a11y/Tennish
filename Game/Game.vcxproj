@@ -236,6 +236,7 @@
     <ClCompile Include="SoundManager\SE\SE.cpp" />
     <ClCompile Include="SoundManager\SoundManager.cpp" />
     <ClCompile Include="Source\Character\Character.cpp" />
+    <ClCompile Include="Source\Character\CharacterAnimator.cpp" />
     <ClCompile Include="Source\Character\Enemy\Enemy.cpp" />
     <ClCompile Include="Source\Character\Player\Player.cpp" />
     <ClCompile Include="Source\Character\Shot\Shot.cpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="SoundManager\SE\SE.h" />
     <ClInclude Include="SoundManager\SoundManager.h" />
     <ClInclude Include="Source\Character\Character.h" />
+    <ClInclude Include="Source\Character\CharacterAnimator.h" />
     <ClInclude Include="Source\Character\Enemy\Enemy.h" />
     <ClInclude Include="Source\Character\Player\Player.h" />
     <ClInclude Include="Source\Character\Shot\Shot.h" />
