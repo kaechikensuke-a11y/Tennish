@@ -46,6 +46,10 @@ bool Character::Start()
 	/** 立ちアニメーションの再生 */
 	m_animator.Load();
 	m_modelRender.Init(path, m_animator.GetAnimationClips(), m_animator.GetAnimationClipNum(), enModelUpAxisZ);
+	
+	/** キャラクターの向きの初期化 */
+	Vector3 facing(0.0f, 0.0f, m_serveDirZ);
+	m_rotation.SetRotationYFromDirectionXZ(facing);
 	m_animator.Bind(&m_modelRender);
 
 	m_modelRender.SetPosition(m_position);
@@ -80,6 +84,17 @@ void Character::Update()
 	if (IsServeInFlight())
 	{
 		isMove = false;
+	}
+
+	/** サーブ関連のアニメ再生中は動けない */
+	if (m_animator.IsOneShotPlaying())
+	{
+		const auto cur = m_animator.GetCurrent();
+		if (cur == CharacterAnimator::en_ServeToss ||
+			cur == CharacterAnimator::en_ServeHit)
+		{
+			isMove = false;
+		}
 	}
 
 	/** 移動できる状態なら */
@@ -190,6 +205,7 @@ void Character::UpdateServe(const Intent& intent)
 			m_ball->ResetBounceCount();
 
 			m_serveState = ServeState::en_Done;
+			m_animator.PlayOneShot(CharacterAnimator::en_ServeHit);
 		}
 		break;
 

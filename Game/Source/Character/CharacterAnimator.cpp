@@ -8,12 +8,14 @@ namespace
 	{
 		"Assets/AnimData/IdleAnimation.tka",
 		"Assets/AnimData/ServeToss.tka",
+		"Assets/AnimData/ServeHit.tka",
 	};
 
 	/** ループするかどうか */
 	constexpr bool CLIP_LOOP[CharacterAnimator::en_ClipNum] =
 	{
 		true,
+		false,
 		false,
 	};
 

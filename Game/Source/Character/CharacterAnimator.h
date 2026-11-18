@@ -5,8 +5,9 @@ public:
 	/** アニメーションの種類 */
 	enum EnClip
 	{
-		en_Idle,      /** 立ち */
-		en_ServeToss, /** トス */
+		en_Idle,      /**     立ち     */
+		en_ServeToss, /**     トス     */
+		en_ServeHit,  /** サーブを打つ */
 		en_ClipNum
 	};
 
@@ -31,6 +32,9 @@ public:
 
 	/** 状態リセット */
 	void Reset();
+
+	/** 今再生しているクリップ */
+	EnClip GetCurrent() const { return m_current; }
 
 private:
 	AnimationClip m_AnimationClips[en_ClipNum];

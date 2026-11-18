@@ -44,6 +44,10 @@ public:
 		m_serveState = isServer ? ServeState::en_Ready : ServeState::en_Waiting;/** サーブ権に応じた状態に */
 		m_tossTimer = 0.0f;/** 前のトスが上がる時間を初期化 */
 		m_animator.Reset();
+
+		/** 得点が決まった後体の向きを初期化する */
+		Vector3 facing(0.0f, 0.0f, m_serveDirZ);
+		m_rotation.SetRotationYFromDirectionXZ(facing);
 	}
 
 	/** 操作を止める/再開する */
