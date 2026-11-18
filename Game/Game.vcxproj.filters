@@ -123,6 +123,9 @@
     <ClCompile Include="Scene\Result\ResultMenu.cpp">
       <Filter>Scene\Result</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Character\CharacterAnimator.cpp">
+      <Filter>Source\Character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -186,6 +189,9 @@
     </ClInclude>
     <ClInclude Include="Scene\Result\ResultMenu.h">
       <Filter>Scene\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Character\CharacterAnimator.h">
+      <Filter>Source\Character</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
