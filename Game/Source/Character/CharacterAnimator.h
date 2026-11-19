@@ -8,6 +8,12 @@ public:
 		en_Idle,      /**     立ち     */
 		en_ServeToss, /**     トス     */
 		en_ServeHit,  /** サーブを打つ */
+		en_RunLeft,   /**   左に歩く   */
+		en_RunRight,  /**   右に歩く   */
+		en_ChargeLeft,  /** チャージ中(左) */
+		en_ChargeRight, /** チャージ中(右) */
+		en_SwingLeft,   /** 左で打つ */
+		en_SwingRight,  /** 右で打つ */
 		en_ClipNum
 	};
 
@@ -41,5 +47,6 @@ private:
 	ModelRender*  m_model     = nullptr;
 	EnClip        m_current   = en_ClipNum;
 	bool          m_isOneShot = false;
+
 };
 

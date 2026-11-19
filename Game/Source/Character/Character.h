@@ -93,7 +93,7 @@ protected:
 	void UpdateRally(const Intent& intent);
 
 	/** 状態に合わせてアニメーションを選ぶ */
-	void UpdateAnimation(const Intent& intent);
+	void UpdateAnimation(const Intent& intent, bool isMove);
 
 	CharacterAnimator m_animator;
 
@@ -109,6 +109,13 @@ protected:
 
 	/** トスしてからの経過時間 */
 	float m_tossTimer = 0.0f;
+
+	/** 最後に倒した左右 */
+	float m_lastSide = 0.0f;
+
+	/** チャージ中の左右 */
+	bool m_chargeSideLeft = false;
+	bool m_wasCharging = false;
 
 	/** トスの最高点に達するまでの時間 */
 	float GetTossApexTime() const;
