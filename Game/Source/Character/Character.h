@@ -44,6 +44,10 @@ public:
 		m_serveState = isServer ? ServeState::en_Ready : ServeState::en_Waiting;/** サーブ権に応じた状態に */
 		m_tossTimer = 0.0f;/** 前のトスが上がる時間を初期化 */
 		m_animator.Reset();
+
+		/** 得点が決まった後体の向きを初期化する */
+		Vector3 facing(0.0f, 0.0f, m_serveDirZ);
+		m_rotation.SetRotationYFromDirectionXZ(facing);
 	}
 
 	/** 操作を止める/再開する */
@@ -89,7 +93,7 @@ protected:
 	void UpdateRally(const Intent& intent);
 
 	/** 状態に合わせてアニメーションを選ぶ */
-	void UpdateAnimation(const Intent& intent);
+	void UpdateAnimation(const Intent& intent, bool isMove);
 
 	CharacterAnimator m_animator;
 
@@ -105,6 +109,13 @@ protected:
 
 	/** トスしてからの経過時間 */
 	float m_tossTimer = 0.0f;
+
+	/** 最後に倒した左右 */
+	float m_lastSide = 0.0f;
+
+	/** チャージ中の左右 */
+	bool m_chargeSideLeft = false;
+	bool m_wasCharging = false;
 
 	/** トスの最高点に達するまでの時間 */
 	float GetTossApexTime() const;

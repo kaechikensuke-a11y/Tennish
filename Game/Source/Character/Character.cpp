@@ -46,6 +46,10 @@ bool Character::Start()
 	/** 立ちアニメーションの再生 */
 	m_animator.Load();
 	m_modelRender.Init(path, m_animator.GetAnimationClips(), m_animator.GetAnimationClipNum(), enModelUpAxisZ);
+	
+	/** キャラクターの向きの初期化 */
+	Vector3 facing(0.0f, 0.0f, m_serveDirZ);
+	m_rotation.SetRotationYFromDirectionXZ(facing);
 	m_animator.Bind(&m_modelRender);
 
 	m_modelRender.SetPosition(m_position);
@@ -82,6 +86,17 @@ void Character::Update()
 		isMove = false;
 	}
 
+	/** サーブ関連のアニメ再生中は動けない */
+	if (m_animator.IsOneShotPlaying())
+	{
+		const auto cur = m_animator.GetCurrent();
+		if (cur == CharacterAnimator::en_ServeToss || cur == CharacterAnimator::en_ServeHit ||
+			cur == CharacterAnimator::en_SwingLeft || cur == CharacterAnimator::en_SwingRight)
+		{
+			isMove = false;
+		}
+	}
+
 	/** 移動できる状態なら */
 	if (isMove)
 	{
@@ -97,16 +112,19 @@ void Character::Update()
 		m_position.x += intent.moveX * m_speed * speedRate * dt;
 		m_position.z += intent.moveZ * m_speed * speedRate * dt;
 
-		/** スティックを倒しているときだけ向きを変える */
-		if (fabsf(intent.moveX) > 0.001f || fabsf(intent.moveZ) > 0.001f)
+		/** 左右を倒したら、その側を記憶(走りアニメの選択用) */
+		if (fabsf(intent.moveX) > 0.2f)
 		{
-			Vector3 dir(intent.moveX, 0.0f, intent.moveZ);
-			m_rotation.SetRotationYFromDirectionXZ(dir);
+			m_lastSide = (intent.moveX > 0.0f) ? 1.0f : -1.0f;
 		}
 	}
 
 	/** 高さは常に固定 */
 	m_position.y = PLAYER_POSITION_Y;
+
+	/** 体の向きは常に相手コート側に固定 */
+	Vector3 facing(0.0f, 0.0f, m_serveDirZ);
+	m_rotation.SetRotationYFromDirectionXZ(facing);
 
 	/** サーブ */
 	UpdateServe(intent);
@@ -115,7 +133,7 @@ void Character::Update()
 	UpdateRally(intent);
 
 	/** アニメーション */
-	UpdateAnimation(intent);
+	UpdateAnimation(intent,isMove);
 
 	/** 動かした座標をモデルに反映する */
 	m_modelRender.SetPosition(m_position);
@@ -190,6 +208,7 @@ void Character::UpdateServe(const Intent& intent)
 			m_ball->ResetBounceCount();
 
 			m_serveState = ServeState::en_Done;
+			m_animator.PlayOneShot(CharacterAnimator::en_ServeHit);
 		}
 		break;
 
@@ -198,12 +217,38 @@ void Character::UpdateServe(const Intent& intent)
 	}
 }
 
-void Character::UpdateAnimation(const Intent& intent)
+void Character::UpdateAnimation(const Intent& intent, bool isMove)
 {
-	/** トス中は終わるまで待つ */
+	/** トス・サーブ中は終わるまで待つ */
 	if (m_animator.IsOneShotPlaying()) return;
 
-	m_animator.PlayLoop(CharacterAnimator::en_Idle);
+	/** 体から見て左か右か(Enemyは反対を向いているので m_serveDirZ を掛ける) */
+	const bool isLeft = (m_lastSide * m_serveDirZ > 0.0f);
+
+	if (intent.isCharging && !m_wasCharging) m_chargeSideLeft = isLeft;
+	m_wasCharging = intent.isCharging;
+	const bool useLeft = intent.isCharging ? m_chargeSideLeft : isLeft;
+
+	/** チャージ中は構えを優先 */
+	if (intent.isCharging)
+	{
+		m_animator.PlayLoop(isLeft ? CharacterAnimator::en_ChargeLeft : CharacterAnimator::en_ChargeRight);
+		return;
+	}
+
+	const bool isStickMoving = fabsf(intent.moveX) > 0.001f || fabsf(intent.moveZ) > 0.001f;
+
+	/** チャージしていなかった場合 */
+	if (isMove && isStickMoving)
+	{
+		/** 走りアニメーションを再生させる */
+		m_animator.PlayLoop(isLeft ? CharacterAnimator::en_RunLeft : CharacterAnimator::en_RunRight);
+	}
+	else
+	{
+		/** 立ちアニメーションを再生させる */
+		m_animator.PlayLoop(CharacterAnimator::en_Idle);
+	}
 }
 
 float Character::GetTossApexTime() const
@@ -257,7 +302,15 @@ void Character::UpdateRally(const Intent& intent)
 	if (m_serveState != ServeState::en_Waiting &&
 		m_serveState != ServeState::en_Done) return;
 
+	/** スイング再生中は振り直さない */
+	if (m_animator.IsOneShotPlaying()) return;
+
 	if (!intent.isSwing) return;                    /** ボタンを押していない */
+	
+	/** 空振りでも振る(ボールの条件より前に再生する) */
+	const bool isLeft = m_wasCharging ? m_chargeSideLeft : (m_lastSide * m_serveDirZ > 0.0f);
+	m_animator.PlayOneShot(isLeft ? CharacterAnimator::en_SwingLeft : CharacterAnimator::en_SwingRight);
+
 	if (!IsBallComing()) return;                    /** 相手の方へ飛んでいくボールは打てない */
 	if (m_ball->GetBounceCount() >= 2) return;      /** 2バウンド後は打てない(ポイント終了) */
 
@@ -283,8 +336,7 @@ void Character::UpdateRally(const Intent& intent)
 	float baseTime = RALLY_TIME_LOW + t * (RALLY_TIME_HIGH - RALLY_TIME_LOW);
 
 	/** ショットの種類とチャージ段階から弾道パラメータを作る */
-	ShotParam sp = MakeShotParam(intent.shot, intent.chargeLevel,
-		baseDist, baseTime, aimX, m_position.x);
+	ShotParam sp = MakeShotParam(intent.shot, intent.chargeLevel,baseDist, baseTime, aimX, m_position.x);
 
 	Vector3 target;
 	target.x = aimX * sp.aimWidth;
@@ -309,6 +361,7 @@ void Character::UpdateRally(const Intent& intent)
 
 	m_ball->ResetBounceCount();
 	m_serveState = ServeState::en_Done;
+
 }
 
 Vector3 Character::CalcHitVelocity(const Vector3& from, const Vector3& target, float flightTime,float gravityScale) const

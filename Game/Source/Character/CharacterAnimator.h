@@ -5,8 +5,15 @@ public:
 	/** アニメーションの種類 */
 	enum EnClip
 	{
-		en_Idle,      /** 立ち */
-		en_ServeToss, /** トス */
+		en_Idle,      /**     立ち     */
+		en_ServeToss, /**     トス     */
+		en_ServeHit,  /** サーブを打つ */
+		en_RunLeft,   /**   左に歩く   */
+		en_RunRight,  /**   右に歩く   */
+		en_ChargeLeft,  /** チャージ中(左) */
+		en_ChargeRight, /** チャージ中(右) */
+		en_SwingLeft,   /** 左で打つ */
+		en_SwingRight,  /** 右で打つ */
 		en_ClipNum
 	};
 
@@ -32,10 +39,14 @@ public:
 	/** 状態リセット */
 	void Reset();
 
+	/** 今再生しているクリップ */
+	EnClip GetCurrent() const { return m_current; }
+
 private:
 	AnimationClip m_AnimationClips[en_ClipNum];
 	ModelRender*  m_model     = nullptr;
 	EnClip        m_current   = en_ClipNum;
 	bool          m_isOneShot = false;
+
 };
 
