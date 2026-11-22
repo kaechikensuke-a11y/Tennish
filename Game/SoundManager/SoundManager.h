@@ -33,6 +33,9 @@ public:
 	void PlayBGM(BGMType type, float volume = 0.5f);
 	void StopBGM();
 
+	/** 再生中のBGMの音量を、今の設定値で更新する(設定画面から呼ぶ) */
+	void UpdateBGMVolume();
+
 private:
 	static SoundManager* m_instance;
 

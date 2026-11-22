@@ -58,6 +58,9 @@
     <Filter Include="Scene\Result\Fade">
       <UniqueIdentifier>{35b04560-e3e7-4f23-9065-02ad579a0666}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene\Option">
+      <UniqueIdentifier>{7c0d9519-1c1b-48d2-a283-067559bc040b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -126,6 +129,9 @@
     <ClCompile Include="Source\Character\CharacterAnimator.cpp">
       <Filter>Source\Character</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\Option\SetteiManager.cpp">
+      <Filter>Scene\Option</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -192,6 +198,9 @@
     </ClInclude>
     <ClInclude Include="Source\Character\CharacterAnimator.h">
       <Filter>Source\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Option\SetteiManager.h">
+      <Filter>Scene\Option</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

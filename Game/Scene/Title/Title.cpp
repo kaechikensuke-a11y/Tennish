@@ -3,6 +3,7 @@
 #include "SoundManager/SoundManager.h"
 #include "SoundManager/BGM/BGM.h"
 #include "SoundManager/SE/SE.h"
+#include "Scene/Option/SetteiManager.h"
 #include "Game.h"
 namespace
 {
