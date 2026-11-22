@@ -4,6 +4,7 @@
 #include<InitGUID.h>
 #include<dxgidebug.h>
 #include "SoundManager/SoundManager.h"
+#include "Scene/Option/SetteiManager.h"
 #include "Scene/Title/Title.h"
 
 
@@ -34,7 +35,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	// ここから初期化を行うコードを記述する。
 	//////////////////////////////////////
 	
-	/** 音の管理クラスは最初に生成させる */
+	/** 音と設定の管理クラスは最初に生成させる */
+	NewGO<SetteiManager>(0, "setteimanager");
 	NewGO<SoundManager>(0, "soundmanager");
 
 	//Gameクラスのオブジェクトを作成。

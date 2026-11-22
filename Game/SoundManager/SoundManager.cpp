@@ -42,3 +42,8 @@ void SoundManager::StopBGM()
 {
 	m_bgm->Stop();
 }
+
+void SoundManager::UpdateBGMVolume()
+{
+	m_bgm->ApplyVolume();
+}
