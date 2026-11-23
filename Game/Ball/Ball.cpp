@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Ball.h"
 #include "Source/Court/CourtConst.h"
+#include "Scene/Pause/PauseState.h"
 
 namespace
 {
@@ -21,6 +22,8 @@ bool Ball::Start()
 
 void Ball::Update()
 {
+	if (PauseState::IsPaused()) return;
+
 	/** ボールをプレイヤーが持っている間は物理計算を行わない */
 	if (!m_isHeld)
 	{

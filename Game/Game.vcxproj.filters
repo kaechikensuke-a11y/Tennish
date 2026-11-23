@@ -61,6 +61,9 @@
     <Filter Include="Scene\Option">
       <UniqueIdentifier>{7c0d9519-1c1b-48d2-a283-067559bc040b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene\Pause">
+      <UniqueIdentifier>{f0ea23fa-17d6-469a-90cb-d1202395ff7d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -132,6 +135,15 @@
     <ClCompile Include="Scene\Option\SetteiManager.cpp">
       <Filter>Scene\Option</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\Option\Option.cpp">
+      <Filter>Scene\Option</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Pause\PauseMenu.cpp">
+      <Filter>Scene\Pause</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Pause\PauseState.cpp">
+      <Filter>Scene\Pause</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -201,6 +213,15 @@
     </ClInclude>
     <ClInclude Include="Scene\Option\SetteiManager.h">
       <Filter>Scene\Option</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Option\Option.h">
+      <Filter>Scene\Option</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Pause\PauseMenu.h">
+      <Filter>Scene\Pause</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Pause\PauseState.h">
+      <Filter>Scene\Pause</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

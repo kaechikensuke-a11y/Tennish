@@ -25,6 +25,8 @@ public:
 	bool IsVibration() const { return m_vibration; }
 	void SetVibration(bool on) { m_vibration = on; }
 
+	void Vibrate(float power, float duration) const;
+
 private:
 	static SetteiManager* m_instance;
 

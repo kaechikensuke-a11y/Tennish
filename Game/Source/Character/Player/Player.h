@@ -2,6 +2,9 @@
 #include "Source/Character/Character.h"
 class Player : public Character
 {
+public:
+	/** プレイヤーが打ったときだけ振動させる */
+	bool IsVibrateOnHit() const override { return true; }
 protected:
 	/** 親の仮想関数を実装 */
 	Intent DecideIntent() override;

@@ -10,6 +10,9 @@ class Ball;
 class ScoreUI;
 class GameCamera;
 class TennisCourt;
+class PauseMenu;
+class Option;
+class SkuCube;
 
 class Game : public IGameObject
 {
@@ -26,6 +29,8 @@ private:
 	enum class GameState
 	{
 		en_Playing, /** 試合中 */
+		en_Pause,        /** ポーズ画面を表示中 */
+		en_PauseOption,  /** ポーズから開いた設定画面を表示中 */
 		en_MatchEnd,/** 試合終了の演出中 */
 	};
 
@@ -34,12 +39,21 @@ private:
 
 	void StartNextPoint();
 
+	/** ポーズ画面を開く */
+	void OpenPause();
+
+	/** ポーズ中の処理(ポーズ画面の決定を受け取って動かす) */
+	void UpdatePause();
+
 	/** 生成したオブジェクトの保存 */
 	Player* m_player = nullptr;
 	Enemy* m_enemy = nullptr;
 	Ball* m_ball = nullptr;
 	TennisCourt* m_court = nullptr;
 	GameCamera* m_gameCamera = nullptr;
+	PauseMenu* m_pauseMenu = nullptr;
+	Option* m_option = nullptr;
+	SkyCube* m_skyCube = nullptr;
 
 	PointJudge  m_pointJudge;
 	PointResult m_pointResult;
