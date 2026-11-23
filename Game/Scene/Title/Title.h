@@ -1,7 +1,9 @@
 #pragma once
+class Option;
 class Title :public IGameObject
 {
 public:
+	~Title();
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
@@ -26,9 +28,11 @@ private:
 	SpriteRender m_setteiRender;/** 設定画面 */
 
 	/** 今選んでいる項目 */
-	Menu m_select = Menu::en_Start; 
-	bool m_stickReleased = true;    /** スティックを戻したかどうか */
+	Menu m_select = Menu::en_Start;
+	/** スティックを元に戻しているか */
+	bool m_stickReleased = true;
 
+	Option* m_option = nullptr;
 	
 };
 

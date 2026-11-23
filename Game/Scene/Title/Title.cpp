@@ -5,6 +5,7 @@
 #include "SoundManager/SE/SE.h"
 #include "Scene/Option/SetteiManager.h"
 #include "Game.h"
+#include "Scene/Option/Option.h"
 namespace
 {
 	/** タイトル画面のファイルパス */
@@ -39,6 +40,16 @@ namespace
 	constexpr float SHADE = 0.5f;
 }
 
+Title::~Title()
+{
+	/** 設定画面を開いたままタイトルが消えても、設定画面が残らないようにする */
+	if (m_option != nullptr)
+	{
+		DeleteGO(m_option);
+		m_option = nullptr;
+	}
+}
+
 bool Title::Start()
 {
 	m_titleRender.Init(TITLE_FILE_PATH, WIDTH, HEIGHT);
@@ -62,6 +73,18 @@ bool Title::Start()
 
 void Title::Update()
 {
+	/** 設定画面が開いている間は、タイトルの入力を止めて閉じるのを待つ */
+	if (m_option != nullptr)
+	{
+		if (m_option->IsClosed())
+		{
+			/** タイトルに戻る。同じフレームで入力が重ならないよう、ここで終わる */
+			DeleteGO(m_option);
+			m_option = nullptr;
+		}
+		return;
+	}
+
 	/** 十字キー・スティックで選択を動かす */
 	MoveSelect();
 
@@ -122,7 +145,7 @@ void Title::Decide()
 	case Menu::en_Settei:
 		SoundManager::GetInstance()->PlaySE(SEType::en_DecideSE);
 		/** 設定画面へ向かう */
-		DeleteGO(this);
+		m_option = NewGO<Option>(1, "option");
 		break;
 	default:
 		break;
@@ -131,6 +154,9 @@ void Title::Decide()
 
 void Title::Render(RenderContext& rc)
 {
+	/** 設定画面は全画面で覆いかぶさるので、開いている間はタイトルを描かない */
+	if (m_option != nullptr) return;
+
 	m_titleRender.Draw(rc);
 
 	if (m_select != Menu::en_Start)

@@ -63,6 +63,9 @@ public:
 	/** サーブがバウンドしたかどうか */
 	bool IsServeInFlight() const;
 
+	/** プレイヤーがショットを打ったときのみ振動させるようにするs */
+	virtual bool IsVibrateOnHit() const { return false; }
+
 /** 自分と子クラスのみ使える */
 protected:
 

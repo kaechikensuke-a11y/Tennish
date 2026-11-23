@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Enemy.h"
 #include "Ball/Ball.h"
+#include "Scene/Pause/PauseState.h"
 
 namespace
 {

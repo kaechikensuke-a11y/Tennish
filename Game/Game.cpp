@@ -9,6 +9,10 @@
 #include "Source/Score/ScoreUI.h"
 #include "Source/Court/CourtConst.h"
 #include "Scene/Title/Title.h"
+#include "Scene/Pause/PauseMenu.h"
+#include "Scene/Option/Option.h"
+#include "Scene/Pause/PauseState.h"
+#include "nature/SkyCube.h"
 
 namespace
 {
@@ -25,9 +29,14 @@ namespace
 
 Game::~Game()
 {
+	PauseState::Reset();
+
+	if (m_pauseMenu != nullptr) DeleteGO(m_pauseMenu);
+	if (m_option != nullptr)    DeleteGO(m_option);
+
 	m_matchEnd.Finish();
 	DeleteGO(m_scoreUI);
-
+	DeleteGO(m_skyCube);
 	DeleteGO(m_ball);
 	DeleteGO(m_player);
 	DeleteGO(m_enemy);
@@ -37,6 +46,17 @@ Game::~Game()
 
 bool Game::Start()
 {
+	/** 前のゲームがポーズ中に終わっていても、止まったまま始まらないようにする */
+	PauseState::Reset();
+	g_renderingEngine->SetDirectionLight(0, Vector3(-0.3f, -1.0f, 0.4f), Vector3(0.6f, 0.6f, 0.6f));
+	
+	/** 空を作る */
+	m_skyCube = NewGO<SkyCube>(0, "skycube");
+	m_skyCube->SetType(enSkyCubeType_DayToon);
+	m_skyCube->SetLuminance(1.0f);
+	m_skyCube->SetScale(1800.0f);
+	m_skyCube->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
+
 	m_court = NewGO<TennisCourt>(0, "tenniscourt");
 	m_gameCamera = NewGO<GameCamera>(0, "gamecamera");
 	m_player = NewGO<Player>(0, "player");
@@ -56,7 +76,7 @@ bool Game::Start()
 
 	/** スコア管理と表示 */
 	MatchSettings ms;
-	ms.gamesToWin = 2;
+	ms.gamesToWin = 1;
 	m_scoreManager = std::make_unique<ScoreManager>(ms);
 
 	m_scoreUI = NewGO<ScoreUI>(0, "scoreui");
@@ -70,6 +90,9 @@ bool Game::Start()
 void Game::Update()
 {
 	if (m_ball == nullptr) return;
+
+	/** 再開待ちのフレームを1つ進める */
+	PauseState::Tick();
 
 	wchar_t text[512];
 	const Vector3& pp = m_player->GetPosition();
@@ -108,6 +131,20 @@ void Game::Update()
 		m_ball->IsHitNet() ? 1 : 0, m_ball->HasCrossedNet() ? 1 : 0,
 		winnerName, reasonName, scoreText);
 	m_debugFont.SetText(text);
+
+	/** ポーズ中は、ポイント判定やタイマーを動かさずここで終わる */
+	if (m_state == GameState::en_Pause || m_state == GameState::en_PauseOption)
+	{
+		UpdatePause();
+		return;
+	}
+
+	/** 試合中にセレクトボタンでポーズを開く */
+	if (m_state == GameState::en_Playing && g_pad[0]->IsTrigger(enButtonSelect))
+	{
+		OpenPause();
+		return;
+	}
 
 	/** 試合終了の演出中は、ポイント処理を止める */
 	if (m_state == GameState::en_MatchEnd)
@@ -236,6 +273,64 @@ void Game::StartNextPoint()
 	m_enemy->ResetForServe(!playerServes,enemyPos);
 
 	m_pointEnded = false;
+}
+
+void Game::OpenPause()
+{
+	PauseState::Pause();
+	m_pauseMenu = NewGO<PauseMenu>(1, "pausemenu");
+	m_state = GameState::en_Pause;
+}
+
+void Game::UpdatePause()
+{
+	/** 設定画面を開いている間は、閉じるのを待つ */
+	if (m_state == GameState::en_PauseOption)
+	{
+		if (m_option != nullptr && m_option->IsClosed())
+		{
+			DeleteGO(m_option);
+			m_option = nullptr;
+
+			/** ポーズ画面に戻る */
+			m_pauseMenu = NewGO<PauseMenu>(1, "pausemenu");
+			m_state = GameState::en_Pause;
+		}
+		return;
+	}
+
+	/** ポーズ画面の決定を受け取る */
+	if (m_pauseMenu == nullptr) return;
+
+	const int decided = m_pauseMenu->GetDecided();
+	if (decided == -1) return;
+
+	DeleteGO(m_pauseMenu);
+	m_pauseMenu = nullptr;
+
+	switch (decided)
+	{
+	case PauseMenu::en_Resume:
+		/** ゲームに戻る */
+		PauseState::Resume();
+		m_state = GameState::en_Playing;
+		break;
+
+	case PauseMenu::en_Option:
+		/** 設定画面を開く */
+		m_option = NewGO<Option>(2, "option");
+		m_state = GameState::en_PauseOption;
+		break;
+
+	case PauseMenu::en_Title:
+		/** タイトルへ。Game を消すと、中のオブジェクトもデストラクタで消える */
+		NewGO<Title>(0, "title");
+		DeleteGO(this);
+		break;
+
+	default:
+		break;
+	}
 }
 
 void Game::Render(RenderContext& rc)

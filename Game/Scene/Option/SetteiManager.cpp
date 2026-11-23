@@ -30,3 +30,13 @@ void SetteiManager::SetSELevel(int level)
 {
 	m_seLevel = ClampLevel(level);
 }
+
+void SetteiManager::Vibrate(float duration, float power) const
+{
+	/** 設定がOFFなら振動させない */
+	if (!m_vibration)
+	{
+		return;
+	}
+	g_pad[0]->SetVibration(duration, power);
+}

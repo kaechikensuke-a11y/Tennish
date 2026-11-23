@@ -4,6 +4,8 @@
 #include "SoundManager/SoundManager.h"
 #include "SoundManager/SE/SE.h"
 #include "Source/Court/CourtConst.h"
+#include "Scene/Pause/PauseState.h" 
+#include "Scene/Option/SetteiManager.h"
 
 namespace
 {
@@ -62,6 +64,8 @@ bool Character::Start()
 
 void Character::Update()
 {
+	if (PauseState::IsPaused()) return;
+
 	if (m_ball == nullptr)
 	{
 		m_ball = FindGO<Ball>("ball");
@@ -203,6 +207,12 @@ void Character::UpdateServe(const Intent& intent)
 
 			/** サーブを打つ音 */
 			SoundManager::GetInstance()->PlaySE(SEType::en_ShotSE);
+
+			/** プレイヤーのサーブなら振動させる(設定がOFFなら中で無視される) */
+			if (IsVibrateOnHit())
+			{
+				SetteiManager::GetInstance()->Vibrate(0.2f, 1.0f);
+			}
 
 			/** トス中のバウンドを数えない */
 			m_ball->ResetBounceCount();
@@ -358,6 +368,12 @@ void Character::UpdateRally(const Intent& intent)
 	m_ball->SetShotEffect(sp.curveAccel, sp.gravityScale, sp.bounceScale);
 
 	SoundManager::GetInstance()->PlaySE(SEType::en_ShotSE);
+
+	/** プレイヤーが打ち返したなら振動させる */
+	if (IsVibrateOnHit())
+	{
+		SetteiManager::GetInstance()->Vibrate(0.2f, 1.0f);
+	}
 
 	m_ball->ResetBounceCount();
 	m_serveState = ServeState::en_Done;
