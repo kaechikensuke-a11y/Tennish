@@ -6,8 +6,7 @@
 #include "SoundManager/SoundManager.h"
 #include "Scene/Option/SetteiManager.h"
 #include "Scene/Title/Title.h"
-
-
+#include "Effect/EffectManager.h"
 
 
 void ReportLiveObjects()
@@ -38,6 +37,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	/** 音と設定の管理クラスは最初に生成させる */
 	NewGO<SetteiManager>(0, "setteimanager");
 	NewGO<SoundManager>(0, "soundmanager");
+	NewGO<EffectManager>(0, "effectmanager");
 
 	//Gameクラスのオブジェクトを作成。
 	NewGO<Title>(0, "title");
