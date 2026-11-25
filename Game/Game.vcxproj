@@ -224,6 +224,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Ball\Ball.cpp" />
+    <ClCompile Include="Effect\EffectManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera\GameCamera.cpp" />
     <ClCompile Include="main.cpp" />
@@ -258,6 +259,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ball\Ball.h" />
+    <ClInclude Include="Effect\EffectManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera\GameCamera.h" />
     <ClInclude Include="Scene\Option\Option.h" />

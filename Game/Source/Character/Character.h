@@ -1,6 +1,7 @@
 #pragma once
 #include "Source/Character/Shot/Shot.h"
 #include "Source/Character/CharacterAnimator.h"
+#include "Effect/EffectManager.h"
 class Ball;
 /** 誰が操作しても同じ処理をまとめる */
 class Character : public IGameObject
@@ -8,7 +9,7 @@ class Character : public IGameObject
 public:
 	Character(){}
 	/** 継承 */
-	virtual ~Character(){}
+	virtual ~Character();
 
 	bool Start();
 	void Update();
@@ -136,6 +137,14 @@ protected:
 	Vector3 m_position;
 	/** キャラクターの向き */
 	Quaternion m_rotation;
+private:
+	/** チャージ中のエフェクトと振動を更新する */
+	void UpdateChargeEffect(const Intent& intent);
 
+	/** 出しているチャージエフェクトのハンドル */
+	int m_chargeEffectHandle = -1;
+
+	/** 今出しているエフェクトの段階 */
+	int m_chargeEffectLevel = -1;
 };
 

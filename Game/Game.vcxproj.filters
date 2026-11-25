@@ -64,6 +64,9 @@
     <Filter Include="Scene\Pause">
       <UniqueIdentifier>{f0ea23fa-17d6-469a-90cb-d1202395ff7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Effect">
+      <UniqueIdentifier>{c436015e-b13f-4993-89dd-65215d2e9f29}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -144,6 +147,9 @@
     <ClCompile Include="Scene\Pause\PauseState.cpp">
       <Filter>Scene\Pause</Filter>
     </ClCompile>
+    <ClCompile Include="Effect\EffectManager.cpp">
+      <Filter>Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -222,6 +228,9 @@
     </ClInclude>
     <ClInclude Include="Scene\Pause\PauseState.h">
       <Filter>Scene\Pause</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect\EffectManager.h">
+      <Filter>Effect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

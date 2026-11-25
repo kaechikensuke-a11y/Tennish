@@ -83,7 +83,6 @@ bool Game::Start()
 	m_scoreUI->SetScoreManager(m_scoreManager.get());
 
 	StartNextPoint();
-
 	return true;
 }
 

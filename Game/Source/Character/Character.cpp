@@ -6,6 +6,7 @@
 #include "Source/Court/CourtConst.h"
 #include "Scene/Pause/PauseState.h" 
 #include "Scene/Option/SetteiManager.h"
+#include "Effect/EffectManager.h"
 
 namespace
 {
@@ -38,6 +39,31 @@ namespace
 
 	/** チャージ中の移動速度の倍率 */
 	constexpr float CHARGE_SPEED_RATE[3] = { 2.0f / 3.0f,1.0f / 2.0f,1.0f / 3.0f };
+
+	/** チャージ段階ごとのエフェクトの種類と大きさ */
+	const EffectType CHARGE_EFFECT[3] =
+	{
+		EffectType::en_ChargeFirst,
+		EffectType::en_ChargeSecond,
+		EffectType::en_ChargeThird
+	};
+	constexpr float CHARGE_EFFECT_SCALE[3] = { 100.0f,130.0f,170.0f };
+
+	/** 段階に入った瞬間の振動と強さ */
+	constexpr float CHARGE_VIBRATION_POWER[3] = {0.1f,0.3f,0.6f};
+	constexpr float CHARGE_VIBRATION_TIME = 0.15f;
+
+	/** ショットを打った瞬間の振動の強さ(チャージごとに強さを大きくする) */
+	constexpr float HIT_VIBRATION_POWER[3] = { 0.5f,0.7f,1.0f };
+
+}
+
+Character::~Character()
+{
+	if (m_chargeEffectHandle != -1 && EffectManager::GetInstance() != nullptr)
+	{
+		EffectManager::GetInstance()->Stop(m_chargeEffectHandle);
+	}
 }
 
 bool Character::Start()
@@ -76,6 +102,9 @@ void Character::Update()
 	{
 		intent = DecideIntent();
 	}
+
+	/** チャージ中のエフェクトと振動 */
+	UpdateChargeEffect(intent);
 
 	/** 経過時間 */
 	float dt = g_gameTime->GetFrameDeltaTime();
@@ -372,7 +401,10 @@ void Character::UpdateRally(const Intent& intent)
 	/** プレイヤーが打ち返したなら振動させる */
 	if (IsVibrateOnHit())
 	{
-		SetteiManager::GetInstance()->Vibrate(0.2f, 1.0f);
+		int hitLevel = intent.chargeLevel;
+		if (hitLevel < 0) hitLevel = 0;
+		if (hitLevel > 2) hitLevel = 2;
+		SetteiManager::GetInstance()->Vibrate(HIT_VIBRATION_POWER[hitLevel], 0.1f);
 	}
 
 	m_ball->ResetBounceCount();
@@ -391,6 +423,55 @@ Vector3 Character::CalcHitVelocity(const Vector3& from, const Vector3& target, f
 	vel.z = (target.z - from.z) / flightTime;
 	vel.y = (target.y - from.y - 0.5f * g * flightTime * flightTime) / flightTime;
 	return vel;
+}
+
+void Character::UpdateChargeEffect(const Intent& intent)
+{
+	EffectManager* effectManager = EffectManager::GetInstance();
+	if (effectManager == nullptr) return;
+
+	/** チャージをしていない場合、エフェクトを止める */
+	if (!intent.isCharging)
+	{
+		if (m_chargeEffectHandle != -1)
+		{
+			effectManager->Stop(m_chargeEffectHandle);
+			m_chargeEffectLevel = -1;
+			return;
+		}
+	}
+
+	/** チャージ段階 */
+	int level = intent.chargeLevel;
+	if (level < 0) level = 0;
+	if (level > 2) level = 2;
+
+	/** チャージの段階が変わったなら、エフェクトを出し直す */
+	if (level != m_chargeEffectLevel)
+	{
+		if (m_chargeEffectHandle != -1)
+		{
+			effectManager->Stop(m_chargeEffectHandle);
+		}
+		m_chargeEffectHandle = effectManager->Play
+		(
+			CHARGE_EFFECT[level], m_position, CHARGE_EFFECT_SCALE[level]
+		);
+
+		m_chargeEffectLevel = level;
+	
+		/** プレイヤーなら、段階に入った瞬間に振動させる */
+		if (IsVibrateOnHit())
+		{
+			SetteiManager::GetInstance()->Vibrate
+			(
+				CHARGE_VIBRATION_POWER[level], CHARGE_VIBRATION_TIME
+			);
+		}
+	}
+
+	/** キャラが動いても、足元についてくるようにする */
+	effectManager->Move(m_chargeEffectHandle, m_position, CHARGE_EFFECT_SCALE[level]);
 }
 
 void Character::Render(RenderContext& rc)
