@@ -10,5 +10,7 @@ public:
 private:
 	/** 通常のテニスコートのステージ */
 	ModelRender m_normalTennisCourt;
+	/** 審判台 */
+	ModelRender m_UmpireChair;
 };
 
