@@ -24,8 +24,8 @@ namespace
 	constexpr float POINT_H = 100.0f;
 
 	/** ボード中心からの点数の位置 */
-	const Vector3 PLAYER_POINT_OFFSET(-200.0f, 0.0f, 0.0f);
-	const Vector3 ENEMY_POINT_OFFSET(200.0f, 0.0f, 0.0f);
+	const Vector3 PLAYER_POINT_OFFSET(-190.0f, 0.0f, 0.0f);
+	const Vector3 ENEMY_POINT_OFFSET(190.0f, 0.0f, 0.0f);
 
 	/** Deuce専用の大きさと位置 */
 	constexpr float DEUCE_W = 340.0f;

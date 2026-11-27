@@ -51,6 +51,12 @@ public:
 		m_rotation.SetRotationYFromDirectionXZ(facing);
 	}
 
+	/** カメラ目線用 */
+	void FaceTo(const Vector3& targetPos)
+	{
+		
+	}
+
 	/** 操作を止める/再開する */
 	void SetControlEnabled(bool enabled) { m_controlEnabled = enabled; }
 
@@ -128,6 +134,10 @@ protected:
 	bool IsBallComing() const;
 
 	bool m_controlEnabled = true;
+
+	/** カメラ目線かどうか(試合終了後) */
+	bool m_isModelTarget = false;
+	Vector3 m_ModelTarget;
 
 	/** モデルのファイルパス(子クラスで差し替える) */
 	const char* m_modelPath = nullptr;
